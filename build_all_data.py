@@ -69,12 +69,14 @@ print("Total files in manifest:", len(manifest))
 go to the right directory first:
 
 cd ~/Desktop/kimia/sample0/LNm0.5s0.736L0.1H15.0
+git status
 
 git add .
-git commit -m "Update dataset"
-git push
+git commit -m "update dataset + plots"
+git push origin main
 
-If Git rejects the push because the remote changed, do:
-
+IF Git says “fetch first” (VERY COMMON)
+Then run this instead:
 git pull --rebase origin main
-git push'''
+git push origin main
+'''
