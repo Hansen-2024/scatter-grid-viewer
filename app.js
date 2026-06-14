@@ -1,32 +1,38 @@
-let DATA = {};
 let GROUPS = {};
+let DATA_CACHE = {};
 
-fetch("all_data.json?v=4")
-  .then(r => r.json())
-  .then(data => {
-      DATA = data;
+init();
 
-      buildGroups();
-      buildMainGrid();
-  })
-  .catch(err => console.error("Failed to load JSON:", err));
+// =============================
+// INIT
+// =============================
+async function init() {
 
+    const manifest = await fetch("split_data/manifest.json")
+        .then(r => r.json())
+        .catch(err => {
+            console.error("Missing split_data/manifest.json", err);
+            return [];
+        });
 
-// -----------------------------
-// GROUP DATA INTO s1p1–s1p4
-// -----------------------------
-function buildGroups() {
+    buildFileMap(manifest);
+    buildMainGrid();
+}
+
+// =============================
+// BUILD GROUPS FROM FILES
+// =============================
+function buildFileMap(files) {
+
     GROUPS = {};
 
-    Object.keys(DATA).forEach(key => {
+    files.forEach(file => {
 
-        let kMatch = key.match(/K([0-9.]+)/);
-        let cMatch = key.match(/C([0-9.]+)/);
+        let kMatch = file.match(/K([0-9.]+)/);
+        let cMatch = file.match(/C([0-9.]+)/);
 
-        if (!kMatch || !cMatch) return;
-
-        let K = kMatch[1];
-        let C = cMatch[1];
+        let K = kMatch ? kMatch[1] : "unknown";
+        let C = cMatch ? cMatch[1] : "unknown";
 
         let groupKey = `K=${K}_C=${C}`;
 
@@ -34,28 +40,26 @@ function buildGroups() {
             GROUPS[groupKey] = [];
         }
 
-        GROUPS[groupKey].push(key);
+        GROUPS[groupKey].push(file);
     });
 }
 
-// -----------------------------
-// BUILD 4 MAIN GRID CELLS
-// -----------------------------
+// =============================
+// BUILD GRID UI
+// =============================
 function buildMainGrid() {
+
     const grid = document.getElementById("grid");
+    const plots = document.getElementById("plots");
+
     grid.innerHTML = "";
+    plots.innerHTML = "";
 
-    let Kvalues = [...new Set(
-        Object.keys(DATA).map(k => k.match(/K([0-9.]+)/)[1])
-    )];
+    let Kvalues = [...new Set(Object.keys(GROUPS).map(k => k.split("_")[0].split("=")[1]))];
+    let Cvalues = [...new Set(Object.keys(GROUPS).map(k => k.split("_")[1].split("=")[1]))];
 
-    let Cvalues = [...new Set(
-        Object.keys(DATA).map(k => k.match(/C([0-9.]+)/)[1])
-    )];
-
-    // sort numerically
-    Kvalues.sort((a,b)=>a-b);
-    Cvalues.sort((a,b)=>a-b);
+    Kvalues.sort((a, b) => a - b);
+    Cvalues.sort((a, b) => a - b);
 
     grid.style.display = "grid";
     grid.style.gridTemplateColumns = `repeat(${Kvalues.length}, 1fr)`;
@@ -71,9 +75,11 @@ function buildMainGrid() {
             cell.className = "cell";
 
             cell.innerHTML = `
-                <div>K/w0 = ${(K/8.0666).toFixed(2)}</div>
+                <div>K/w0 = ${(K / 8.0666).toFixed(2)}</div>
                 <div>C = ${C}</div>
-                <div style="font-size:12px;color:gray">1 spawn seed(s) · 4 phase seed(s)</div>
+                <div style="font-size:12px;color:gray">
+                    ${GROUPS[groupKey].length} plots
+                </div>
             `;
 
             cell.onclick = () => showGroup(groupKey);
@@ -83,62 +89,80 @@ function buildMainGrid() {
     });
 }
 
-// -----------------------------
-// SHOW 4 PLOTS (2x2 LAYOUT)
-// -----------------------------
+// =============================
+// SHOW 2x2 PLOTS
+// =============================
 function showGroup(groupName) {
+
     const plots = document.getElementById("plots");
-    const experimentTag = "LNm0.5s0.736L0.1H15.0";
     plots.innerHTML = "";
 
-    let keys = GROUPS[groupName].slice(0, 4);
+    let files = GROUPS[groupName].slice(0, 4);
 
     let container = document.createElement("div");
     container.style.display = "grid";
     container.style.gridTemplateColumns = "1fr 1fr";
-    container.style.gap = "5px";          // ↓ smaller spacing
+    container.style.gap = "5px";
     container.style.width = "100%";
 
     plots.appendChild(container);
 
-    keys.forEach((key) => {
-    
+    files.forEach(file => {
+
         let div = document.createElement("div");
         div.style.height = "350px";
         div.style.width = "100%";
-    
+
         container.appendChild(div);
-    
-        let d = DATA[key];
-    
-        let seedMatch = key.match(/s1p[1-4]/);
-        let seed = seedMatch ? seedMatch[0] : "s?p?";
-        
-        let title = `${seed}_${experimentTag}`;
-        // title = title.replace("s", "s ").replace("p", " p ");
-    
-        Plotly.newPlot(div, [{
-              x: d.x,
-              y: d.y,
-              mode: "markers",
-              type: "scattergl",
-              marker: { size: 2 }
-          }], {
-              title: {
-                  text: title,
-                  font: {
-                      size: 14   // smaller title
-                  },
-                  x: 0.5,
-                  xanchor: "center",
-                  y: 0.94     // move title down
-              },
-              margin: {
-                  t: 30,   // reduce top space
-                  l: 40,
-                  r: 10,
-                  b: 40
-              }
-          });
+
+        loadAndPlot(file, div);
+    });
+}
+
+// =============================
+// LAZY LOAD DATA FILE
+// =============================
+async function loadAndPlot(file, div) {
+
+    if (DATA_CACHE[file]) {
+        drawPlot(DATA_CACHE[file], div, file);
+        return;
+    }
+
+    try {
+        const d = await fetch(`split_data/${file}`).then(r => r.json());
+
+        DATA_CACHE[file] = d;
+
+        drawPlot(d, div, file);
+
+    } catch (err) {
+        console.error("Failed loading file:", file, err);
+    }
+}
+
+// =============================
+// PLOT FUNCTION
+// =============================
+function drawPlot(d, div, file) {
+
+    let seedMatch = file.match(/s1p[1-4]/);
+    let seed = seedMatch ? seedMatch[0] : "s?p?";
+
+    const experimentTag = "LNm0.5s0.736L0.1H15.0";
+
+    Plotly.newPlot(div, [{
+        x: d.x,
+        y: d.y,
+        mode: "markers",
+        type: "scattergl",
+        marker: { size: 2 }
+    }], {
+        title: {
+            text: `${seed}_${experimentTag}`,
+            font: { size: 14 },
+            x: 0.5
+        },
+        margin: { t: 30, l: 40, r: 10, b: 40 }
     });
 }
