@@ -64,3 +64,17 @@ with open(manifest_path, "w") as f:
 
 print("manifest.json created")
 print("Total files in manifest:", len(manifest))
+
+'''Then commit the changes:
+go to the right directory first:
+
+cd ~/Desktop/kimia/sample0/LNm0.5s0.736L0.1H15.0
+
+git add .
+git commit -m "Update dataset"
+git push
+
+If Git rejects the push because the remote changed, do:
+
+git pull --rebase origin main
+git push'''
