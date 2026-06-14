@@ -31,9 +31,9 @@ function buildFileMap(files) {
         let kMatch = file.match(/K([0-9.]+)/);
         let cMatch = file.match(/C([0-9.]+)/);
 
-        let K = kMatch ? kMatch[1] : "unknown";
-        let C = cMatch ? cMatch[1] : "unknown";
-
+        let K = kMatch ? Math.abs(parseFloat(kMatch[1])) : null;
+        let C = cMatch ? parseFloat(cMatch[1]) : null;
+        Math.round(K / 8.0666)
         let groupKey = `K=${K}_C=${C}`;
 
         if (!GROUPS[groupKey]) {
@@ -50,45 +50,104 @@ function buildFileMap(files) {
 function buildMainGrid() {
 
     const grid = document.getElementById("grid");
-    const plots = document.getElementById("plots");
-
     grid.innerHTML = "";
-    plots.innerHTML = "";
 
-    let Kvalues = [...new Set(Object.keys(GROUPS).map(k => k.split("_")[0].split("=")[1]))];
-    let Cvalues = [...new Set(Object.keys(GROUPS).map(k => k.split("_")[1].split("=")[1]))];
+    let Kvalues = [];
+    let Cvalues = [];
 
-    Cvalues.sort((a, b) => b - a);   // largest → smallest
-    Kvalues.sort((a, b) => a - b);   // smallest → largest
-    
+    Object.keys(GROUPS).forEach(group => {
+
+        let parts = group.split("_");
+
+        let K = parseFloat(parts[0].split("=")[1]);
+        let C = parseFloat(parts[1].split("=")[1]);
+
+        if (!Kvalues.includes(K))
+            Kvalues.push(K);
+
+        if (!Cvalues.includes(C))
+            Cvalues.push(C);
+    });
+
+    Kvalues.sort((a,b)=>a-b);
+    Cvalues.sort((a,b)=>a-b);
+
+    // +1 because first column is C labels
     grid.style.display = "grid";
-    grid.style.gridTemplateColumns = `repeat(${Kvalues.length}, 1fr)`;
-    grid.style.gap = "10px";
+    grid.style.gridTemplateColumns =
+        `80px repeat(${Kvalues.length},120px)`;
+    grid.style.gap = "6px";
 
-    Cvalues.forEach(C => {
-        Kvalues.forEach(K => {
+    // empty corner
+    let corner = document.createElement("div");
+    corner.innerHTML = "<b>C \\ K/w₀</b>";
+    grid.appendChild(corner);
 
-            let groupKey = `K=${K}_C=${C}`;
-            if (!GROUPS[groupKey]) return;
+    // K headers
+    Kvalues.forEach(K=>{
 
-            let cell = document.createElement("div");
-            cell.className = "cell";
+        let h=document.createElement("div");
 
-            cell.innerHTML = `
-                <div>K/w0 = ${Math.round(Math.abs(K / 8.0666))}</div>
-                <div>C = ${C}</div>
-                <div style="font-size:12px;color:gray">
-                    ${GROUPS[groupKey].length} plots
-                </div>
-            `;
+        h.style.fontWeight="bold";
+        h.style.textAlign="center";
 
-            cell.onclick = () => showGroup(groupKey);
+        h.innerHTML=(K/8.0666).toFixed(1);
+
+        grid.appendChild(h);
+
+    });
+
+    // largest C first (top row)
+    [...Cvalues].reverse().forEach(C=>{
+
+        let rowLabel=document.createElement("div");
+
+        rowLabel.style.fontWeight="bold";
+        rowLabel.style.display="flex";
+        rowLabel.style.alignItems="center";
+        rowLabel.style.justifyContent="center";
+
+        rowLabel.innerHTML=C;
+
+        grid.appendChild(rowLabel);
+
+        Kvalues.forEach(K=>{
+
+            let groupKey=`K=${K}_C=${C}`;
+
+            let cell=document.createElement("div");
+
+            cell.style.height="80px";
+            cell.style.border="1px solid black";
+            cell.style.display="flex";
+            cell.style.alignItems="center";
+            cell.style.justifyContent="center";
+
+            if(GROUPS[groupKey]){
+
+                cell.style.cursor="pointer";
+                cell.style.background="white";
+
+                cell.innerHTML=`${GROUPS[groupKey].length}<br>plots`;
+
+                cell.onclick=()=>showGroup(groupKey);
+
+            }
+            else{
+
+                cell.style.background="#dddddd";
+                cell.style.color="#888";
+                cell.innerHTML="—";
+
+            }
 
             grid.appendChild(cell);
-        });
-    });
-}
 
+        });
+
+    });
+
+}
 // =============================
 // SHOW 2x2 PLOTS
 // =============================
