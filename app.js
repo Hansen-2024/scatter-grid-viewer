@@ -44,7 +44,7 @@ function buildFileMap(files) {
     });
 }
 
-// =============================
+/// =============================
 // BUILD GRID UI
 // =============================
 function buildMainGrid() {
@@ -67,47 +67,86 @@ function buildMainGrid() {
 
         if (!Cvalues.includes(C))
             Cvalues.push(C);
+
     });
 
     Kvalues.sort((a,b)=>a-b);
     Cvalues.sort((a,b)=>a-b);
 
-    // +1 because first column is C labels
+    const rows = Cvalues.length;
+
     grid.style.display = "grid";
     grid.style.gridTemplateColumns =
-        `80px repeat(${Kvalues.length},120px)`;
+        `50px 60px repeat(${Kvalues.length},120px)`;
+
     grid.style.gap = "6px";
+    grid.style.alignItems = "center";
 
-    // empty corner
-    let corner = document.createElement("div");
-    corner.innerHTML = "<b>C \\ K/w₀</b>";
-    grid.appendChild(corner);
+    // -----------------------
+    // TOP TITLE ROW
+    // -----------------------
 
-    // K headers
+    grid.appendChild(document.createElement("div"));
+    grid.appendChild(document.createElement("div"));
+
+    let kTitle = document.createElement("div");
+
+    kTitle.innerHTML = "<b>K/w₀</b>";
+
+    kTitle.style.gridColumn = `3 / span ${Kvalues.length}`;
+    kTitle.style.textAlign = "center";
+    kTitle.style.fontSize = "20px";
+
+    grid.appendChild(kTitle);
+
+    // -----------------------
+    // K HEADER ROW
+    // -----------------------
+
+    grid.appendChild(document.createElement("div"));
+    grid.appendChild(document.createElement("div"));
+
     Kvalues.forEach(K=>{
 
         let h=document.createElement("div");
 
-        h.style.fontWeight="bold";
-        h.style.textAlign="center";
+        h.innerHTML=`<b>${Math.round(K/8.0666)}</b>`;
 
-        h.innerHTML=(K/8.0666).toFixed(1);
+        h.style.textAlign="center";
 
         grid.appendChild(h);
 
     });
 
-    // largest C first (top row)
+    // -----------------------
+    // C LABEL
+    // -----------------------
+
+    let cLabel=document.createElement("div");
+
+    cLabel.innerHTML="<b>C</b>";
+
+    cLabel.style.gridRow=`3 / span ${rows}`;
+
+    cLabel.style.display="flex";
+    cLabel.style.alignItems="center";
+    cLabel.style.justifyContent="center";
+
+    grid.appendChild(cLabel);
+
+    // -----------------------
+    // DATA ROWS
+    // -----------------------
+
     [...Cvalues].reverse().forEach(C=>{
 
         let rowLabel=document.createElement("div");
 
-        rowLabel.style.fontWeight="bold";
+        rowLabel.innerHTML=`<b>${C}</b>`;
+
         rowLabel.style.display="flex";
         rowLabel.style.alignItems="center";
         rowLabel.style.justifyContent="center";
-
-        rowLabel.innerHTML=C;
 
         grid.appendChild(rowLabel);
 
@@ -119,25 +158,35 @@ function buildMainGrid() {
 
             cell.style.height="80px";
             cell.style.border="1px solid black";
+
             cell.style.display="flex";
             cell.style.alignItems="center";
             cell.style.justifyContent="center";
 
             if(GROUPS[groupKey]){
 
-                cell.style.cursor="pointer";
                 cell.style.background="white";
+                cell.style.cursor="pointer";
 
                 cell.innerHTML=`${GROUPS[groupKey].length}<br>plots`;
 
                 cell.onclick=()=>showGroup(groupKey);
+
+                cell.onmouseenter=()=>{
+                    cell.style.background="#f2f2f2";
+                };
+
+                cell.onmouseleave=()=>{
+                    cell.style.background="white";
+                };
 
             }
             else{
 
                 cell.style.background="#dddddd";
                 cell.style.color="#888";
-                cell.innerHTML="—";
+
+                cell.innerHTML="";
 
             }
 
