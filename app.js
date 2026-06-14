@@ -75,7 +75,7 @@ function buildMainGrid() {
             cell.className = "cell";
 
             cell.innerHTML = `
-                <div>K/w0 = ${(K / 8.0666).toFixed(2)}</div>
+                <div>K/w0 = ${Math.round(Math.abs(K / 8.0666))}</div>
                 <div>C = ${C}</div>
                 <div style="font-size:12px;color:gray">
                     ${GROUPS[groupKey].length} plots
