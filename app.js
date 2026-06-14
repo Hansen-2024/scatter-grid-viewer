@@ -58,9 +58,9 @@ function buildMainGrid() {
     let Kvalues = [...new Set(Object.keys(GROUPS).map(k => k.split("_")[0].split("=")[1]))];
     let Cvalues = [...new Set(Object.keys(GROUPS).map(k => k.split("_")[1].split("=")[1]))];
 
-    Kvalues.sort((a, b) => a - b);
-    Cvalues.sort((a, b) => a - b);
-
+    Cvalues.sort((a, b) => b - a);   // largest → smallest
+    Kvalues.sort((a, b) => a - b);   // smallest → largest
+    
     grid.style.display = "grid";
     grid.style.gridTemplateColumns = `repeat(${Kvalues.length}, 1fr)`;
     grid.style.gap = "10px";
