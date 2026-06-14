@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scatter Grid Viewer</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        /* MAIN 2x2 GRID */
+        #grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-width: 600px;
+        }
+
+        /* EACH CELL */
+        .cell {
+            padding: 20px;
+            border: 1px solid black;
+            cursor: pointer;
+            text-align: center;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .cell:hover {
+            background: #f2f2f2;
+        }
+
+        /* PLOTS AREA */
+        #plots {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Parameter Grid</h2>
+<div id="grid"></div>
+
+<h2>Plots</h2>
+<div id="plots"></div>
+
+<script src="app.js?v=2"></script>
+
+</body>
+</html>
