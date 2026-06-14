@@ -8,7 +8,7 @@ import numpy as np
 base_dir = "/home/willow/Desktop/kimia/sample0/LNm0.5s0.736L0.1H15.0"
 
 # ==============================
-# OUTPUT FOLDER FOR SPLIT FILES
+# OUTPUT FOLDER
 # ==============================
 output_dir = os.path.join(base_dir, "split_data")
 os.makedirs(output_dir, exist_ok=True)
@@ -26,24 +26,19 @@ for root, dirs, files in os.walk(base_dir):
             try:
                 data = np.loadtxt(file_path)
 
-                # handle single-line files
                 if data.ndim == 1:
                     data = data.reshape(1, -1)
 
                 x = data[:, 0].tolist()
                 y = data[:, 1].tolist()
 
-                # safe relative key → filename-safe
                 rel_path = os.path.relpath(file_path, base_dir)
                 safe_key = rel_path.replace("/", "_").replace("\\", "_")
 
                 out_path = os.path.join(output_dir, f"data_{safe_key}.json")
 
                 with open(out_path, "w") as f:
-                    json.dump({
-                        "x": x,
-                        "y": y
-                    }, f)
+                    json.dump({"x": x, "y": y}, f)
 
                 count += 1
 
@@ -52,4 +47,20 @@ for root, dirs, files in os.walk(base_dir):
 
 print("DONE → split dataset created")
 print("Files written:", count)
-print("Output folder:", output_dir)
+
+# ==============================
+# ✅ ADD MANIFEST (IMPORTANT)
+# ==============================
+
+manifest = [
+    f for f in os.listdir(output_dir)
+    if f.endswith(".json")
+]
+
+manifest_path = os.path.join(output_dir, "manifest.json")
+
+with open(manifest_path, "w") as f:
+    json.dump(manifest, f)
+
+print("manifest.json created")
+print("Total files in manifest:", len(manifest))
