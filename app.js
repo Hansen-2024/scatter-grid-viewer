@@ -283,7 +283,12 @@ function drawPlot(d, div, file) {
     let kMatch = file.match(/K([0-9.]+)/);
     let cMatch = file.match(/C([0-9.]+)/);
 
-    let K = kMatch ? (parseFloat(kMatch[1]) / 8.0609).toFixed(1) : "?";
+    let K = "?";
+    
+    if (kMatch) {
+        let kValue = Math.round((parseFloat(kMatch[1]) / 8.0609) * 10) / 10;
+        K = kValue % 1 === 0 ? kValue.toFixed(0) : kValue.toFixed(1);
+    }
     let C = cMatch ? parseFloat(cMatch[1]).toFixed(2) : "?";
 
     const experimentTag = "LNm0.5s0.736L0.1H15.0";
