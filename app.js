@@ -62,12 +62,11 @@ function buildMainGrid() {
         let K = parseFloat(parts[0].split("=")[1]);
         let C = parseFloat(parts[1].split("=")[1]);
         
-        if (!isNaN(K) && !Kvalues.includes(K))
+        if (!Kvalues.includes(K))
             Kvalues.push(K);
-        
-        if (!isNaN(C) && !Cvalues.includes(C))
+
+        if (!Cvalues.includes(C))
             Cvalues.push(C);
-            });
 
     Kvalues.sort((a,b)=>a-b);
     Cvalues.sort((a,b)=>a-b);
@@ -199,12 +198,28 @@ function buildMainGrid() {
 // =============================
 // SHOW 2x2 PLOTS
 // =============================
+// =============================
+// SHOW ALL PLOTS
+// =============================
 function showGroup(groupName) {
 
     const plots = document.getElementById("plots");
     plots.innerHTML = "";
 
-    let files = GROUPS[groupName].slice(0, 4);
+    // show every plot in the group
+    let files = GROUPS[groupName];
+
+    // sort by s1p1, s1p2, s1p3, s1p4, ...
+    files = [...files].sort((a, b) => {
+
+        let pa = a.match(/s\d+p(\d+)/);
+        let pb = b.match(/s\d+p(\d+)/);
+
+        let na = pa ? parseInt(pa[1]) : 9999;
+        let nb = pb ? parseInt(pb[1]) : 9999;
+
+        return na - nb;
+    });
 
     let container = document.createElement("div");
     container.style.display = "grid";
@@ -223,31 +238,10 @@ function showGroup(groupName) {
         container.appendChild(div);
 
         loadAndPlot(file, div);
+
     });
+
 }
-
-// =============================
-// LAZY LOAD DATA FILE
-// =============================
-async function loadAndPlot(file, div) {
-
-    if (DATA_CACHE[file]) {
-        drawPlot(DATA_CACHE[file], div, file);
-        return;
-    }
-
-    try {
-        const d = await fetch(`split_data/${file}`).then(r => r.json());
-
-        DATA_CACHE[file] = d;
-
-        drawPlot(d, div, file);
-
-    } catch (err) {
-        console.error("Failed loading file:", file, err);
-    }
-}
-
 // =============================
 // PLOT FUNCTION
 // =============================
