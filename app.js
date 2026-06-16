@@ -31,9 +31,12 @@ function buildFileMap(files) {
         let kMatch = file.match(/K([0-9.]+)/);
         let cMatch = file.match(/C([0-9.]+)/);
 
-        let K = kMatch ? Math.abs(parseFloat(kMatch[1])) : null;
-        let C = cMatch ? parseFloat(cMatch[1]) : null;
-        Math.round(K / 8.0666)
+        let K = kMatch ? Math.abs(parseFloat(kMatch[1])) : NaN;
+        let C = cMatch ? parseFloat(cMatch[1]) : NaN;
+        
+        if (isNaN(K) || isNaN(C))
+            return;
+        
         let groupKey = `K=${K}_C=${C}`;
 
         if (!GROUPS[groupKey]) {
@@ -52,7 +55,7 @@ function buildMainGrid() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
-    let s = [];
+    let Kvalues = [];
     let Cvalues = [];
 
     Object.keys(GROUPS).forEach(group => {
@@ -61,13 +64,14 @@ function buildMainGrid() {
 
         let K = parseFloat(parts[0].split("=")[1]);
         let C = parseFloat(parts[1].split("=")[1]);
-        
-        if (!Kvalues.includes(K))
+                
+        if (!isNaN(K) && !Kvalues.includes(K))
             Kvalues.push(K);
-
-        if (!Cvalues.includes(C))
+        
+        if (!isNaN(C) && !Cvalues.includes(C))
             Cvalues.push(C);
-
+    });   // <-- THIS WAS MISSING
+    
     Kvalues.sort((a,b)=>a-b);
     Cvalues.sort((a,b)=>a-b);
 
