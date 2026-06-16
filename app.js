@@ -277,8 +277,14 @@ async function loadAndPlot(file, div) {
 // =============================
 function drawPlot(d, div, file) {
 
-    let seedMatch = file.match(/s1p[1-4]/);
+    let seedMatch = file.match(/s\d+p\d+/);
     let seed = seedMatch ? seedMatch[0] : "s?p?";
+
+    let kMatch = file.match(/K([0-9.]+)/);
+    let cMatch = file.match(/C([0-9.]+)/);
+
+    let K = kMatch ? (parseFloat(kMatch[1]) / 8.0666).toFixed(1) : "?";
+    let C = cMatch ? parseFloat(cMatch[1]).toFixed(2) : "?";
 
     const experimentTag = "LNm0.5s0.736L0.1H15.0";
 
@@ -290,7 +296,7 @@ function drawPlot(d, div, file) {
         marker: { size: 2 }
     }], {
         title: {
-            text: `${seed}_${experimentTag}`,
+            text: `${seed}_${experimentTag}_K${K}C${C}`,
             font: { size: 14 },
             x: 0.5
         },
