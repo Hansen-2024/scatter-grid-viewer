@@ -52,7 +52,7 @@ function buildMainGrid() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
-    let Kvalues = [];
+    let s = [];
     let Cvalues = [];
 
     Object.keys(GROUPS).forEach(group => {
@@ -61,14 +61,13 @@ function buildMainGrid() {
 
         let K = parseFloat(parts[0].split("=")[1]);
         let C = parseFloat(parts[1].split("=")[1]);
-
-        if (!Kvalues.includes(K))
+        
+        if (!isNaN(K) && !Kvalues.includes(K))
             Kvalues.push(K);
-
-        if (!Cvalues.includes(C))
+        
+        if (!isNaN(C) && !Cvalues.includes(C))
             Cvalues.push(C);
-
-    });
+            });
 
     Kvalues.sort((a,b)=>a-b);
     Cvalues.sort((a,b)=>a-b);
