@@ -112,7 +112,7 @@ function buildMainGrid() {
 
         let h=document.createElement("div");
 
-        h.innerHTML=`<b>${Math.round(K/8.0666)}</b>`;
+        h.innerHTML=`<b>${Math.round(K/8.0609)}</b>`;
 
         h.style.textAlign="center";
 
@@ -283,7 +283,7 @@ function drawPlot(d, div, file) {
     let kMatch = file.match(/K([0-9.]+)/);
     let cMatch = file.match(/C([0-9.]+)/);
 
-    let K = kMatch ? (parseFloat(kMatch[1]) / 8.0666).toFixed(1) : "?";
+    let K = kMatch ? (parseFloat(kMatch[1]) / 8.0609).toFixed(1) : "?";
     let C = cMatch ? parseFloat(cMatch[1]).toFixed(2) : "?";
 
     const experimentTag = "LNm0.5s0.736L0.1H15.0";
