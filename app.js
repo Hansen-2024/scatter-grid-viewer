@@ -247,6 +247,32 @@ function showGroup(groupName) {
 
 }
 // =============================
+// LAZY LOAD DATA FILE
+// =============================
+async function loadAndPlot(file, div) {
+
+    if (DATA_CACHE[file]) {
+        drawPlot(DATA_CACHE[file], div, file);
+        return;
+    }
+
+    try {
+
+        const d = await fetch(`split_data/${file}`)
+            .then(r => r.json());
+
+        DATA_CACHE[file] = d;
+
+        drawPlot(d, div, file);
+
+    } catch (err) {
+
+        console.error("Failed loading file:", file, err);
+
+    }
+
+}
+// =============================
 // PLOT FUNCTION
 // =============================
 function drawPlot(d, div, file) {
