@@ -337,7 +337,7 @@ function drawPlot(d, div, file) {
         x: d.x,
         y: d.y,
         mode: "markers",
-        type: "scatter",
+        type: "scattergl",
         marker: { size: 2 }
     }], {
         title: {
