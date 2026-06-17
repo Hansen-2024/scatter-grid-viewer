@@ -37,9 +37,34 @@ for root, dirs, files in os.walk(base_dir):
 
                 out_path = os.path.join(output_dir, f"data_{safe_key}.json")
 
-                with open(out_path, "w") as f:
-                    json.dump({"x": x, "y": y}, f)
+                # -----------------------
+                # add color if exists
+                # -----------------------
 
+                color_file = file_path.replace("_raster.dat", "_color.json")
+
+                if os.path.exists(color_file):
+
+                    with open(color_file) as cf:
+
+                        colors = json.load(cf)["color"]
+
+                    with open(out_path, "w") as f:
+
+                        json.dump({
+                            "x": x,
+                            "y": y,
+                            "color": colors
+                        }, f)
+
+                else:
+
+                    with open(out_path, "w") as f:
+
+                        json.dump({
+                            "x": x,
+                            "y": y
+                        }, f)
                 count += 1
 
             except Exception as e:
@@ -69,8 +94,8 @@ print("Total files in manifest:", len(manifest))
 go to the right directory first:
 
 cd ~/Desktop/kimia/sample0/LNm0.5s0.736L0.1H15.0
-git status
 
+git status
 git add .
 git commit -m "update dataset + plots"
 git push origin main
