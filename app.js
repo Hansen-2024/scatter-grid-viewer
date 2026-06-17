@@ -2,6 +2,7 @@ let GROUPS = {};
 let DATA_CACHE = {};
 let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
+let COLOR_MODE = false;
 
 const PLOTS_PER_PAGE = 8;
 init();
