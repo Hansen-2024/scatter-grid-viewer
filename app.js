@@ -1,6 +1,9 @@
 let GROUPS = {};
 let DATA_CACHE = {};
+let CURRENT_GROUP = null;
+let CURRENT_PAGE = 0;
 
+const PLOTS_PER_PAGE = 10;
 init();
 
 // =============================
@@ -199,20 +202,17 @@ function buildMainGrid() {
     });
 
 }
-// =============================
-// SHOW 2x2 PLOTS
-// =============================
-// =============================
-// SHOW ALL PLOTS
-// =============================
-function showGroup(groupName) {
+function showGroup(groupName, page = 0) {
+
+    CURRENT_GROUP = groupName;
+    CURRENT_PAGE = page;
 
     const plots = document.getElementById("plots");
     plots.innerHTML = "";
 
-    let files = GROUPS[groupName];
+    let files = [...GROUPS[groupName]];
 
-    files = [...files].sort((a, b) => {
+    files.sort((a, b) => {
 
         let pa = a.match(/s\d+p(\d+)/);
         let pb = b.match(/s\d+p(\d+)/);
@@ -223,30 +223,59 @@ function showGroup(groupName) {
         return na - nb;
     });
 
+    const totalPages = Math.ceil(files.length / PLOTS_PER_PAGE);
+
+    let start = page * PLOTS_PER_PAGE;
+    let end = Math.min(start + PLOTS_PER_PAGE, files.length);
+
     let container = document.createElement("div");
 
     container.style.display = "grid";
     container.style.gridTemplateColumns = "1fr 1fr";
     container.style.gap = "5px";
-    container.style.width = "100%";
 
     plots.appendChild(container);
 
-    files.forEach(file => {
+    for (let i = start; i < end; i++) {
 
         let div = document.createElement("div");
 
         div.style.height = "350px";
         div.style.width = "100%";
 
-        // save filename for later
-        div.dataset.file = file;
-
         container.appendChild(div);
 
-    });
+        loadAndPlot(files[i], div);
 
-    lazyRenderPlots(container);
+    }
+
+    let nav = document.createElement("div");
+
+    nav.style.marginTop = "20px";
+    nav.style.textAlign = "center";
+
+    nav.innerHTML =
+        `<button id="prevBtn">Previous</button>
+         &nbsp;&nbsp;
+         Page ${page + 1} / ${totalPages}
+         &nbsp;&nbsp;
+         <button id="nextBtn">Next</button>`;
+
+    plots.appendChild(nav);
+
+    document.getElementById("prevBtn").onclick = () => {
+
+        if (CURRENT_PAGE > 0)
+            showGroup(CURRENT_GROUP, CURRENT_PAGE - 1);
+
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+
+        if (CURRENT_PAGE < totalPages - 1)
+            showGroup(CURRENT_GROUP, CURRENT_PAGE + 1);
+
+    };
 
 }
 // =============================
@@ -275,43 +304,7 @@ async function loadAndPlot(file, div) {
     }
 
 }
-function lazyRenderPlots(container) {
 
-    const observer = new IntersectionObserver(entries => {
-
-        entries.forEach(entry => {
-
-            if (entry.isIntersecting) {
-
-                let div = entry.target;
-
-                if (!div.dataset.loaded) {
-
-                    div.dataset.loaded = "1";
-
-                    loadAndPlot(div.dataset.file, div);
-
-                }
-
-            }
-
-        });
-
-    }, {
-
-        root: null,
-        rootMargin: "200px",
-        threshold: 0.01
-
-    });
-
-    container.querySelectorAll("div").forEach(div => {
-
-        observer.observe(div);
-
-    });
-
-}
 // =============================
 // PLOT FUNCTION
 // =============================
