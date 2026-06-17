@@ -337,8 +337,8 @@ function drawPlot(d, div, file) {
         x: d.x,
         y: d.y,
         mode: "markers",
-        type: "scattergl",
-        marker: { size: 1 }
+        type: "scatter",
+        marker: { size: 2 }
     }], {
         title: {
             text: `${seed}_${experimentTag}_K${K}C${C}`,
