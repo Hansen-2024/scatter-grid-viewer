@@ -161,7 +161,9 @@ function buildMainGrid() {
 
             let cell=document.createElement("div");
 
-            cell.style.height="80px";
+            cell.style.height = "90px";
+            cell.style.fontSize = "12px";
+            cell.style.lineHeight = "1.2";
             cell.style.border="1px solid black";
 
             cell.style.display="flex";
@@ -251,21 +253,32 @@ function showGroup(groupName, page = 0) {
             loadAndPlot(files[i], div);
     
             // ⭐ CRITICAL: yield to browser
-            await new Promise(requestAnimationFrame);
+            await new Promise(r => setTimeout(r, 50));
         }
     }
 
     let nav = document.createElement("div");
-
-    nav.style.marginTop = "20px";
+    
+    nav.style.position = "sticky";
+    nav.style.bottom = "0";
+    
+    nav.style.background = "white";
+    nav.style.padding = "12px 10px";
+    nav.style.borderTop = "1px solid #ddd";
+    
+    nav.style.zIndex = "999";
+    
     nav.style.textAlign = "center";
+    
+    // iOS safe area fix
+    nav.style.paddingBottom = "calc(12px + env(safe-area-inset-bottom))";
 
     nav.innerHTML =
-        `<button id="prevBtn">Previous</button>
+        `<button id="prevBtn" style="font-size:16px; padding:8px 14px;">Previous</button>
          &nbsp;&nbsp;
          Page ${page + 1} / ${totalPages}
          &nbsp;&nbsp;
-         <button id="nextBtn">Next</button>`;
+         <button id="nextBtn" style="font-size:16px; padding:8px 14px;">Next</button>`;
 
     plots.appendChild(nav);
 
@@ -284,6 +297,18 @@ function showGroup(groupName, page = 0) {
     };
 
 }
+function parseFileMeta(file) {
+
+    let kMatch = file.match(/K([0-9.]+)/);
+    let cMatch = file.match(/C([0-9.]+)/);
+    let seedMatch = file.match(/s\d+p\d+/);
+
+    return {
+        K: kMatch ? parseFloat(kMatch[1]) : null,
+        C: cMatch ? parseFloat(cMatch[1]).toFixed(2) : null,
+        seed: seedMatch ? seedMatch[0] : "?"
+    };
+}
 // =============================
 // LAZY LOAD DATA FILE
 // =============================
@@ -295,27 +320,22 @@ async function loadAndPlot(file, div) {
     }
 
     try {
+        const d = await fetch(`split_data/${file}`).then(r => r.json());
 
-        const d = await fetch(`split_data/${file}`)
-            .then(r => r.json());
-
+        d.meta = parseFileMeta(file);
         DATA_CACHE[file] = d;
-
+        Plotly.purge(div);
         drawPlot(d, div, file);
 
     } catch (err) {
-
         console.error("Failed loading file:", file, err);
-
     }
-
 }
-
 // =============================
 // PLOT FUNCTION
 // =============================
 function drawPlot(d, div, file) {
-
+    
     let seedMatch = file.match(/s\d+p\d+/);
     let seed = seedMatch ? seedMatch[0] : "s?p?";
 
