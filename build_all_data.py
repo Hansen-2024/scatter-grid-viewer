@@ -41,10 +41,11 @@ for root, dirs, files in os.walk(base_dir):
                 # add color if exists
                 # -----------------------
 
-                color_file = file_path.replace("_raster.dat", "_color.json")
+                base_name = os.path.splitext(file_path)[0]
+                color_file = base_name.replace("_raster", "_color") + ".json"
 
                 if os.path.exists(color_file):
-
+                    print("FOUND COLOR:", color_file)
                     with open(color_file) as cf:
 
                         colors = json.load(cf)["color"]
@@ -58,7 +59,7 @@ for root, dirs, files in os.walk(base_dir):
                         }, f)
 
                 else:
-
+                    print("NO COLOR:", color_file)
                     with open(out_path, "w") as f:
 
                         json.dump({
