@@ -363,7 +363,7 @@ function drawPlot(d, div, file) {
             type: "scattergl",
             marker: {
                 size: 2,
-                color: "#1f77b4"
+                color: "#bbbbbb"                 //"#1f77b4"        //"#bbbbbb"
             }
         }], {
             title: {
