@@ -3,6 +3,7 @@ let DATA_CACHE = {};
 let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
 let COLOR_MODE = false;
+let SHOW_COLOR = false;
 
 const PLOTS_PER_PAGE = 8;
 init();
@@ -21,6 +22,19 @@ async function init() {
 
     buildFileMap(manifest);
     buildMainGrid();
+    
+    document.getElementById("colorBtn").onclick=function(){
+    
+        COLOR_MODE=!COLOR_MODE;
+    
+        this.innerHTML=COLOR_MODE?
+            "Show Normal":
+            "Show Colored";
+    
+        if(CURRENT_GROUP)
+            showGroup(CURRENT_GROUP,CURRENT_PAGE);
+    
+    };
 }
 
 // =============================
@@ -352,14 +366,28 @@ function drawPlot(d, div, file) {
     let C = cMatch ? parseFloat(cMatch[1]).toFixed(2) : "?";
 
     const experimentTag = "LNm0.5s0.736L0.1H15.0";
-
-    Plotly.newPlot(div, [{
-        x: d.x,
-        y: d.y,
-        mode: "markers",
-        type: "scattergl",
-        marker: { size: 2 }
-    }], {
+    
+    Plotly.newPlot(div,[{
+    
+        x:d.x,
+    
+        y:d.y,
+    
+        mode:"markers",
+    
+        type:"scattergl",
+    
+        marker:{
+    
+            size:2,
+    
+            color:COLOR_MODE && d.color
+                ? d.color
+                : "#bbbbbb"
+    
+        }
+    
+    }],{
         title: {
             text: `${seed}_${experimentTag}_K${K}C${C}`,
             font: { size: 14 },
