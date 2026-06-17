@@ -210,10 +210,8 @@ function showGroup(groupName) {
     const plots = document.getElementById("plots");
     plots.innerHTML = "";
 
-    // show every plot in the group
     let files = GROUPS[groupName];
 
-    // sort by s1p1, s1p2, s1p3, s1p4, ...
     files = [...files].sort((a, b) => {
 
         let pa = a.match(/s\d+p(\d+)/);
@@ -226,6 +224,7 @@ function showGroup(groupName) {
     });
 
     let container = document.createElement("div");
+
     container.style.display = "grid";
     container.style.gridTemplateColumns = "1fr 1fr";
     container.style.gap = "5px";
@@ -236,14 +235,18 @@ function showGroup(groupName) {
     files.forEach(file => {
 
         let div = document.createElement("div");
+
         div.style.height = "350px";
         div.style.width = "100%";
 
+        // save filename for later
+        div.dataset.file = file;
+
         container.appendChild(div);
 
-        loadAndPlot(file, div);
-
     });
+
+    lazyRenderPlots(container);
 
 }
 // =============================
@@ -272,6 +275,43 @@ async function loadAndPlot(file, div) {
     }
 
 }
+function lazyRenderPlots(container) {
+
+    const observer = new IntersectionObserver(entries => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                let div = entry.target;
+
+                if (!div.dataset.loaded) {
+
+                    div.dataset.loaded = "1";
+
+                    loadAndPlot(div.dataset.file, div);
+
+                }
+
+            }
+
+        });
+
+    }, {
+
+        root: null,
+        rootMargin: "200px",
+        threshold: 0.01
+
+    });
+
+    container.querySelectorAll("div").forEach(div => {
+
+        observer.observe(div);
+
+    });
+
+}
 // =============================
 // PLOT FUNCTION
 // =============================
@@ -298,7 +338,7 @@ function drawPlot(d, div, file) {
         y: d.y,
         mode: "markers",
         type: "scattergl",
-        marker: { size: 2 }
+        marker: { size: 1 }
     }], {
         title: {
             text: `${seed}_${experimentTag}_K${K}C${C}`,
