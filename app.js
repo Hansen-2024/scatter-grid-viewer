@@ -3,7 +3,7 @@ let DATA_CACHE = {};
 let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
 
-const PLOTS_PER_PAGE = 10;
+const PLOTS_PER_PAGE = 8;
 init();
 
 // =============================
