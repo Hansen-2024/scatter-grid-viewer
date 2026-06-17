@@ -190,7 +190,14 @@ function buildMainGrid() {
                 cell.style.background="white";
                 cell.style.cursor="pointer";
 
-                cell.innerHTML=`${GROUPS[groupKey].length}<br>plots`;
+                cell.innerHTML = `
+                    <div style="font-size:18px; font-weight:bold;">
+                        ${GROUPS[groupKey].length}
+                    </div>
+                    <div style="font-size:13px;">
+                        plots
+                    </div>
+                `;
 
                 cell.onclick=()=>showGroup(groupKey);
 
@@ -408,7 +415,7 @@ function drawPlot(d, div, file) {
             type: "scattergl",
             name: c,   // <- LEGEND LABEL
             marker: {
-                size: 2,
+                size: 10,
                 color: c
             }
         });
