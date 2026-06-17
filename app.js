@@ -350,47 +350,74 @@ async function loadAndPlot(file, div) {
 // PLOT FUNCTION
 // =============================
 function drawPlot(d, div, file) {
-    
-    let seedMatch = file.match(/s\d+p\d+/);
-    let seed = seedMatch ? seedMatch[0] : "s?p?";
-
-    let kMatch = file.match(/K([0-9.]+)/);
-    let cMatch = file.match(/C([0-9.]+)/);
-
-    let K = "?";
-    
-    if (kMatch) {
-        let kValue = Math.round((parseFloat(kMatch[1]) / 8.0609) * 10) / 10;
-        K = kValue % 1 === 0 ? kValue.toFixed(0) : kValue.toFixed(1);
-    }
-    let C = cMatch ? parseFloat(cMatch[1]).toFixed(2) : "?";
 
     const experimentTag = "LNm0.5s0.736L0.1H15.0";
-    
-    Plotly.newPlot(div,[{
-    
-        x:d.x,
-    
-        y:d.y,
-    
-        mode:"markers",
-    
-        type:"scattergl",
-    
-        marker:{
-    
-            size:2,
-            color: (COLOR_MODE && Array.isArray(d.color) && d.color.length === d.x.length)
-            //color:COLOR_MODE && d.color
-                ? d.color
-                : "#bbbbbb"        //grey
-                //: "#1f77b4"            //default python blue
-    
+
+    if (!COLOR_MODE || !d.color) {
+
+        // NORMAL MODE (keep as-is)
+        Plotly.newPlot(div, [{
+            x: d.x,
+            y: d.y,
+            mode: "markers",
+            type: "scattergl",
+            marker: {
+                size: 2,
+                color: "#1f77b4"
+            }
+        }], {
+            title: {
+                text: file,
+                font: { size: 14 },
+                x: 0.5
+            },
+            margin: { t: 30, l: 40, r: 10, b: 40 }
+        });
+
+        return;
+    }
+
+    // ============================
+    // COLOR MODE (WITH LEGEND)
+    // ============================
+
+    const traces = [];
+
+    const groups = {};
+
+    // group points by color
+    for (let i = 0; i < d.x.length; i++) {
+
+        const c = d.color[i] || "#bbbbbb";
+
+        if (!groups[c]) {
+            groups[c] = { x: [], y: [] };
         }
-    
-    }],{
+
+        groups[c].x.push(d.x[i]);
+        groups[c].y.push(d.y[i]);
+    }
+
+    // convert each color group into a trace
+    for (const c in groups) {
+
+        traces.push({
+            x: groups[c].x,
+            y: groups[c].y,
+            mode: "markers",
+            type: "scattergl",
+            name: c,   // <- LEGEND LABEL
+            marker: {
+                size: 2,
+                color: c
+            }
+        });
+    }
+
+    Plotly.newPlot(div, traces, {
+        showlegend: true,
         title: {
-            text: `${seed}_${experimentTag}_K${K}C${C}`,
+            text: file,
             font: { size: 14 },
             x: 0.5
         },
