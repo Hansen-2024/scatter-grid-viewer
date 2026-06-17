@@ -380,11 +380,11 @@ function drawPlot(d, div, file) {
         marker:{
     
             size:2,
-    
-            color:COLOR_MODE && d.color
+            color: (COLOR_MODE && Array.isArray(d.color) && d.color.length === d.x.length)
+            //color:COLOR_MODE && d.color
                 ? d.color
-                //: "#bbbbbb"        //grey
-                : "#1f77b4"            //default python blue
+                : "#bbbbbb"        //grey
+                //: "#1f77b4"            //default python blue
     
         }
     
