@@ -383,7 +383,8 @@ function drawPlot(d, div, file) {
     
             color:COLOR_MODE && d.color
                 ? d.color
-                : "#bbbbbb"
+                //: "#bbbbbb"        //grey
+                : "#1f77b4"            //default python blue
     
         }
     
