@@ -235,18 +235,24 @@ function showGroup(groupName, page = 0) {
     container.style.gap = "5px";
 
     plots.appendChild(container);
-
-    for (let i = start; i < end; i++) {
-
-        let div = document.createElement("div");
-
-        div.style.height = "350px";
-        div.style.width = "100%";
-
-        container.appendChild(div);
-
-        loadAndPlot(files[i], div);
-
+    renderPageStaggered(start, end, files, container);
+    
+    async function renderPageStaggered(start, end, files, container) {
+    
+        for (let i = start; i < end; i++) {
+    
+            let div = document.createElement("div");
+    
+            div.style.height = "350px";
+            div.style.width = "100%";
+    
+            container.appendChild(div);
+    
+            loadAndPlot(files[i], div);
+    
+            // ⭐ CRITICAL: yield to browser
+            await new Promise(requestAnimationFrame);
+        }
     }
 
     let nav = document.createElement("div");
