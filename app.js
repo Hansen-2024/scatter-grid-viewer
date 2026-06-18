@@ -23,17 +23,16 @@ async function init() {
     buildFileMap(manifest);
     buildMainGrid();
     
-    document.getElementById("colorBtn").onclick=function(){
+    document.getElementById("normalBtn").onclick = function () {
+        COLOR_MODE = false;
+        if (CURRENT_GROUP)
+            showGroup(CURRENT_GROUP, CURRENT_PAGE);
+    };
     
-        COLOR_MODE=!COLOR_MODE;
-    
-        this.innerHTML=COLOR_MODE?
-            "Show Normal":
-            "Show Colored";
-    
-        if(CURRENT_GROUP)
-            showGroup(CURRENT_GROUP,CURRENT_PAGE);
-    
+    document.getElementById("colorBtn").onclick = function () {
+        COLOR_MODE = true;
+        if (CURRENT_GROUP)
+            showGroup(CURRENT_GROUP, CURRENT_PAGE);
     };
 }
 
