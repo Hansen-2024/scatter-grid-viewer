@@ -177,7 +177,11 @@ function buildMainGrid() {
             let cell=document.createElement("div");
 
             cell.style.height = "90px";
-            cell.style.fontSize = "12px";
+            
+            cell.style.fontSize = "16px";
+            cell.style.fontWeight = "bold";
+            cell.style.lineHeight = "1.4";
+            
             cell.style.lineHeight = "1.2";
             cell.style.border="1px solid black";
 
