@@ -366,7 +366,7 @@ function drawPlot(d, div, file) {
             type: "scattergl",
             marker: {
                 size: 2,
-                color: "#bbbbbb"                 //"#1f77b4"        //"#bbbbbb"
+                color: "#0000dd"                 //"#1f77b4"        //"#bbbbbb"        //"#0000dd"
             }
         }], {
             title: {
