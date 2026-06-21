@@ -8,7 +8,11 @@ let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
 const PLOTS_PER_PAGE = 8;
 init();
+window.onpopstate = function() {
 
+    buildSeedChooser();
+
+};
 // =============================
 // INIT
 // =============================
@@ -105,15 +109,27 @@ function buildSeedChooser(){
     `;
 
     document.getElementById("s1pBtn").onclick=()=>{
-
+    
+        history.pushState(
+            {view:"s1p"},
+            "",
+            "#s1p"
+        );
+    
         CURRENT_VIEW="s1p";
-
+    
         buildKCGrid();
-
+    
     };
 
     document.getElementById("sp1Btn").onclick=()=>{
-
+    
+        history.pushState(
+            {view:"sp1"},
+            "",
+            "#sp1"
+        );
+    
         CURRENT_VIEW="sp1";
 
         document.getElementById("grid").innerHTML=
@@ -129,23 +145,6 @@ function buildKCGrid() {
 
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
-
-    let homeBtn = document.createElement("button");
-
-    homeBtn.innerHTML = "← Home";
-
-    homeBtn.style.fontSize = "20px";
-    homeBtn.style.marginBottom = "20px";
-
-    homeBtn.onclick = () => {
-
-        SEED_FILTER = null;
-
-        buildSeedChooser();   // or buildSeedChooser()
-
-    };
-
-    grid.appendChild(homeBtn);
 
     let Kvalues = [];
     let Cvalues = [];
