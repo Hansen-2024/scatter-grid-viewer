@@ -141,7 +141,7 @@ function buildKCGrid() {
 
         SEED_FILTER = null;
 
-        showSeedSelector();   // or buildSeedChooser()
+        buildSeedChooser();   // or buildSeedChooser()
 
     };
 
