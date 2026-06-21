@@ -69,9 +69,10 @@ function buildFileMap(files) {
     });
 }
 function buildSeedChooser(){
-
+    document.getElementById("normalBtn").style.display = "none";
+    document.getElementById("colorBtn").style.display = "none";
     const grid=document.getElementById("grid");
-
+    
     grid.innerHTML=`
     
     <div id="s1pBtn"
@@ -107,7 +108,7 @@ function buildSeedChooser(){
     </div>
     
     `;
-
+    
     document.getElementById("s1pBtn").onclick=()=>{
     
         history.pushState(
