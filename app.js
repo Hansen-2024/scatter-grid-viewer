@@ -69,15 +69,39 @@ function buildSeedChooser(){
     const grid=document.getElementById("grid");
 
     grid.innerHTML=`
-
-    <div class="seedChoice" id="s1pBtn">
+    
+    <div id="s1pBtn"
+         style="
+            width:250px;
+            height:120px;
+            border:2px solid black;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:28px;
+            font-weight:bold;
+            cursor:pointer;
+            margin:20px auto;
+         ">
         s1p?
     </div>
-
-    <div class="seedChoice" id="sp1Btn">
+    
+    <div id="sp1Btn"
+         style="
+            width:250px;
+            height:120px;
+            border:2px solid black;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:28px;
+            font-weight:bold;
+            cursor:pointer;
+            margin:20px auto;
+         ">
         s?p1
     </div>
-
+    
     `;
 
     document.getElementById("s1pBtn").onclick=()=>{
@@ -105,6 +129,23 @@ function buildKCGrid() {
 
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
+
+    let homeBtn = document.createElement("button");
+
+    homeBtn.innerHTML = "← Home";
+
+    homeBtn.style.fontSize = "20px";
+    homeBtn.style.marginBottom = "20px";
+
+    homeBtn.onclick = () => {
+
+        SEED_FILTER = null;
+
+        showSeedSelector();   // or buildSeedChooser()
+
+    };
+
+    grid.appendChild(homeBtn);
 
     let Kvalues = [];
     let Cvalues = [];
