@@ -4,6 +4,7 @@ let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
 let COLOR_MODE = false;
 let SHOW_COLOR = false;
+let SEED_FILTER = null;
 
 const PLOTS_PER_PAGE = 8;
 init();
@@ -19,9 +20,9 @@ async function init() {
             console.error("Missing split_data/manifest.json", err);
             return [];
         });
-
+    
     buildFileMap(manifest);
-    buildMainGrid();
+    showSeedSelector();
     
     document.getElementById("normalBtn").onclick = function () {
         COLOR_MODE = false;
@@ -35,7 +36,62 @@ async function init() {
             showGroup(CURRENT_GROUP, CURRENT_PAGE);
     };
 }
+function getSeedGroups() {
 
+    let groups = {};
+
+    Object.values(GROUPS).flat().forEach(file => {
+
+        let m = file.match(/s(\d+)p(\d+)/);
+
+        if (!m) return;
+
+        let s = m[1];
+        let p = m[2];
+
+        let sGroup = `s${s}p?`;
+        let pGroup = `s?p${p}`;
+
+        groups[sGroup] = true;
+        groups[pGroup] = true;
+    });
+
+    return Object.keys(groups).sort();
+}
+function showSeedSelector() {
+
+    const grid = document.getElementById("grid");
+
+    grid.innerHTML = "";
+
+    let title = document.createElement("h2");
+
+    title.innerText = "Choose Seed Family";
+
+    grid.appendChild(title);
+
+    let seeds = getSeedGroups();
+
+    seeds.forEach(seed => {
+
+        let btn = document.createElement("button");
+
+        btn.innerText = seed;
+
+        btn.style.margin = "10px";
+        btn.style.padding = "10px 20px";
+        btn.style.fontSize = "18px";
+
+        btn.onclick = () => {
+
+            SEED_FILTER = seed;
+
+            buildMainGrid();
+        };
+
+        grid.appendChild(btn);
+    });
+}
 // =============================
 // BUILD GROUPS FROM FILES
 // =============================
@@ -74,8 +130,36 @@ function buildMainGrid() {
 
     let Kvalues = [];
     let Cvalues = [];
+let filteredGroups = {};
 
-    Object.keys(GROUPS).forEach(group => {
+    Object.keys(filteredGroups).forEach(group => {
+    
+        let files = filteredGroups[group].filter(file => {
+    
+            if (!SEED_FILTER)
+                return true;
+    
+            if (SEED_FILTER.includes("p?")) {
+    
+                let s = SEED_FILTER.match(/s(\d+)/)[1];
+    
+                return file.includes(`s${s}p`);
+            }
+    
+            if (SEED_FILTER.includes("s?")) {
+    
+                let p = SEED_FILTER.match(/p(\d+)/)[1];
+    
+                return file.includes(`p${p}`);
+            }
+    
+            return true;
+        });
+    
+        if (files.length)
+            filteredGroups[group] = files;
+    });
+    Object.keys(filteredGroups).forEach(group => {
 
         let parts = group.split("_");
 
@@ -188,12 +272,12 @@ function buildMainGrid() {
             cell.style.alignItems="center";
             cell.style.justifyContent="center";
 
-            if(GROUPS[groupKey]){
+            if(filteredGroups[groupKey]){
 
                 cell.style.background="white";
                 cell.style.cursor="pointer";
 
-                cell.innerHTML=`${GROUPS[groupKey].length}<br>plots`;
+                cell.innerHTML=`${filteredGroups[groupKey].length}<br>plots`;
 
                 cell.onclick=()=>showGroup(groupKey);
 
