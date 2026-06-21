@@ -5,7 +5,7 @@ let CURRENT_PAGE = 0;
 let COLOR_MODE = false;
 let SHOW_COLOR = false;
 let SEED_FILTER = null;
-
+let CURRENT_VIEW = "home";
 const PLOTS_PER_PAGE = 8;
 init();
 
@@ -22,7 +22,7 @@ async function init() {
         });
     
     buildFileMap(manifest);
-    showSeedSelector();
+    buildSeedChooser();;
     
     document.getElementById("normalBtn").onclick = function () {
         COLOR_MODE = false;
@@ -36,62 +36,7 @@ async function init() {
             showGroup(CURRENT_GROUP, CURRENT_PAGE);
     };
 }
-function getSeedGroups() {
 
-    let groups = {};
-
-    Object.values(GROUPS).flat().forEach(file => {
-
-        let m = file.match(/s(\d+)p(\d+)/);
-
-        if (!m) return;
-
-        let s = m[1];
-        let p = m[2];
-
-        let sGroup = `s${s}p?`;
-        let pGroup = `s?p${p}`;
-
-        groups[sGroup] = true;
-        groups[pGroup] = true;
-    });
-
-    return Object.keys(groups).sort();
-}
-function showSeedSelector() {
-
-    const grid = document.getElementById("grid");
-
-    grid.innerHTML = "";
-
-    let title = document.createElement("h2");
-
-    title.innerText = "Choose Seed Family";
-
-    grid.appendChild(title);
-
-    let seeds = getSeedGroups();
-
-    seeds.forEach(seed => {
-
-        let btn = document.createElement("button");
-
-        btn.innerText = seed;
-
-        btn.style.margin = "10px";
-        btn.style.padding = "10px 20px";
-        btn.style.fontSize = "18px";
-
-        btn.onclick = () => {
-
-            SEED_FILTER = seed;
-
-            buildMainGrid();
-        };
-
-        grid.appendChild(btn);
-    });
-}
 // =============================
 // BUILD GROUPS FROM FILES
 // =============================
@@ -119,22 +64,55 @@ function buildFileMap(files) {
         GROUPS[groupKey].push(file);
     });
 }
+function buildSeedChooser(){
 
+    const grid=document.getElementById("grid");
+
+    grid.innerHTML=`
+
+    <div class="seedChoice" id="s1pBtn">
+        s1p?
+    </div>
+
+    <div class="seedChoice" id="sp1Btn">
+        s?p1
+    </div>
+
+    `;
+
+    document.getElementById("s1pBtn").onclick=()=>{
+
+        CURRENT_VIEW="s1p";
+
+        buildKCGrid();
+
+    };
+
+    document.getElementById("sp1Btn").onclick=()=>{
+
+        CURRENT_VIEW="sp1";
+
+        document.getElementById("grid").innerHTML=
+            "<h2>Coming soon</h2>";
+
+    };
+
+}
 /// =============================
 // BUILD GRID UI
 // =============================
-function buildMainGrid() {
+function buildKCGrid() {
 
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
     let Kvalues = [];
     let Cvalues = [];
-let filteredGroups = {};
+    let filteredGroups = {};
 
-    Object.keys(filteredGroups).forEach(group => {
+    Object.keys(GROUPS).forEach(group => {
     
-        let files = filteredGroups[group].filter(file => {
+        let files = GROUPS[group].filter(file => {
     
             if (!SEED_FILTER)
                 return true;
