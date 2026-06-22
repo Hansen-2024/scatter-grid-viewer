@@ -8,10 +8,11 @@ let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
 const PLOTS_PER_PAGE = 8;
 init();
-window.onpopstate = function() {
+window.onpopstate = function () {
 
-    buildSeedChooser(){
-    clearUI();
+    CURRENT_VIEW = "home";
+
+    buildSeedChooser();
 
 };
 // =============================
@@ -122,6 +123,8 @@ function buildSeedChooser(){
     
     document.getElementById("s1pBtn").onclick=()=>{
     
+        SEED_FILTER = "s1p?";
+    
         history.pushState(
             {view:"s1p"},
             "",
@@ -133,8 +136,9 @@ function buildSeedChooser(){
         buildKCGrid();
     
     };
-
     document.getElementById("sp1Btn").onclick=()=>{
+    
+        SEED_FILTER = "s?p1";
     
         history.pushState(
             {view:"sp1"},
@@ -143,10 +147,9 @@ function buildSeedChooser(){
         );
     
         CURRENT_VIEW="sp1";
-
-        document.getElementById("grid").innerHTML=
-            "<h2>Coming soon</h2>";
-
+    
+        buildKCGrid();
+    
     };
 
 }
@@ -337,8 +340,10 @@ function buildKCGrid() {
 
 }
 function showGroup(groupName, page = 0) {
+    document.getElementById("colorControls").style.display = "block";
     document.getElementById("grid").style.display = "none";
     document.getElementById("plots").style.display = "block";
+    document.getElementById("colorControls").style.display = "none";
     CURRENT_GROUP = groupName;
     CURRENT_PAGE = page;
 
