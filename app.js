@@ -6,6 +6,7 @@ let COLOR_MODE = false;
 let SHOW_COLOR = false;
 let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
+let SELECTED_CELL = null;
 const PLOTS_PER_PAGE = 8;
 
 init();
@@ -197,8 +198,10 @@ function buildKCGrid() {
     document.getElementById("grid").style.display = "grid";
     document.getElementById("plots").style.display = "none";
     const grid = document.getElementById("grid");
+    const plots = document.getElementById("plots");
 
-    grid.innerHTML = "";
+    plots.innerHTML = "";
+    plots.style.display = "none";
 
     let Kvalues = [];
     let Cvalues = [];
@@ -352,7 +355,18 @@ function buildKCGrid() {
                 cell.innerHTML=`${filteredGroups[groupKey].length}<br>plots`;
 
                 cell.onclick=()=>{
-                
+                    if (SELECTED_CELL)
+                            SELECTED_CELL.style.outline = "";
+                    
+                        SELECTED_CELL = cell;
+                    
+                        cell.style.outline = "4px solid red";
+                    
+                        showGroup(
+                            groupKey,
+                            0,
+                            filteredGroups[groupKey]
+                        );
                     history.pushState(
                         {
                             view:"group",
@@ -399,7 +413,7 @@ function showGroup(groupName, page = 0, customFiles = null) {
     document.getElementById("colorControls").style.display = "block";
     document.getElementById("plotsTitle").style.display = "block";
 
-    document.getElementById("grid").style.display = "none";
+    document.getElementById("grid").style.display = "grid";
     document.getElementById("plots").style.display = "block";
     CURRENT_VIEW = "plots";
     document.getElementById("normalBtn").onclick = function () {
