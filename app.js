@@ -112,6 +112,7 @@ function buildFileMap(files) {
 }
 function buildSeedChooser(){
     clearUI();
+    CURRENT_VIEW = "home";
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
