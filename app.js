@@ -98,6 +98,7 @@ function buildFileMap(files) {
 }
 function buildSeedChooser(){
     clearUI();
+    document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
     document.getElementById("grid").style.display = "block";
@@ -175,9 +176,12 @@ function buildSeedChooser(){
 // BUILD GRID UI
 // =============================
 function buildKCGrid() {
-    document.getElementById("plotsTitle").style.display = "block";
     document.getElementById("colorControls").style.display = "block";
+    document.getElementById("plotsTitle").style.display = "block";
+    document.getElementById("grid").style.display = "grid";
+    document.getElementById("plots").style.display = "none";
     const grid = document.getElementById("grid");
+
     grid.innerHTML = "";
 
     let Kvalues = [];
