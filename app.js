@@ -7,6 +7,7 @@ let SHOW_COLOR = false;
 let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
 const PLOTS_PER_PAGE = 8;
+
 init();
 window.onpopstate = function(event){
 
@@ -49,15 +50,27 @@ async function init() {
     buildSeedChooser();;
     
     document.getElementById("normalBtn").onclick = function () {
+    
         COLOR_MODE = false;
-        if (CURRENT_GROUP)
+    
+        if (
+            document.getElementById("plots").style.display === "block" &&
+            CURRENT_GROUP
+        ) {
             showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        }
     };
     
     document.getElementById("colorBtn").onclick = function () {
+    
         COLOR_MODE = true;
-        if (CURRENT_GROUP)
+    
+        if (
+            document.getElementById("plots").style.display === "block" &&
+            CURRENT_GROUP
+        ) {
             showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        }
     };
 }
 function clearUI() {
@@ -176,6 +189,9 @@ function buildSeedChooser(){
 // BUILD GRID UI
 // =============================
 function buildKCGrid() {
+    CURRENT_GROUP = null;
+    CURRENT_PAGE = 0;
+    CURRENT_VIEW = "grid";
     document.getElementById("colorControls").style.display = "block";
     document.getElementById("plotsTitle").style.display = "block";
     document.getElementById("grid").style.display = "grid";
@@ -385,8 +401,26 @@ function showGroup(groupName, page = 0, customFiles = null) {
 
     document.getElementById("grid").style.display = "none";
     document.getElementById("plots").style.display = "block";
-
+    CURRENT_VIEW = "plots";
+    document.getElementById("normalBtn").onclick = function () {
+    
+        COLOR_MODE = false;
+    
+        if (CURRENT_VIEW === "plots" && CURRENT_GROUP) {
+            showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        }
+    };
+    
+    document.getElementById("colorBtn").onclick = function () {
+    
+        COLOR_MODE = true;
+    
+        if (CURRENT_VIEW === "plots" && CURRENT_GROUP) {
+            showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        }
+    };
     CURRENT_GROUP = groupName;
+    
     CURRENT_PAGE = page;
 
     const plots = document.getElementById("plots");
