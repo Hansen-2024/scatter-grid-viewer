@@ -10,7 +10,8 @@ const PLOTS_PER_PAGE = 8;
 init();
 window.onpopstate = function() {
 
-    buildSeedChooser();
+    buildSeedChooser(){
+    clearUI();
 
 };
 // =============================
@@ -40,7 +41,15 @@ async function init() {
             showGroup(CURRENT_GROUP, CURRENT_PAGE);
     };
 }
+function clearUI() {
+    const grid = document.getElementById("grid");
+    const plots = document.getElementById("plots");
 
+    Plotly.purge(plots);   // VERY IMPORTANT (removes ghost canvases)
+
+    grid.innerHTML = "";
+    plots.innerHTML = "";
+}
 // =============================
 // BUILD GROUPS FROM FILES
 // =============================
@@ -69,8 +78,10 @@ function buildFileMap(files) {
     });
 }
 function buildSeedChooser(){
-    document.getElementById("normalBtn").style.display = "none";
-    document.getElementById("colorBtn").style.display = "none";
+    clearUI();
+
+    document.getElementById("plots").style.display = "none";
+    document.getElementById("grid").style.display = "block";
     const grid=document.getElementById("grid");
     
     grid.innerHTML=`
@@ -326,7 +337,8 @@ function buildKCGrid() {
 
 }
 function showGroup(groupName, page = 0) {
-
+    document.getElementById("grid").style.display = "none";
+    document.getElementById("plots").style.display = "block";
     CURRENT_GROUP = groupName;
     CURRENT_PAGE = page;
 
