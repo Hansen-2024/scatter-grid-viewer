@@ -117,7 +117,9 @@ function buildSeedChooser(){
     document.getElementById("plots").style.display = "none";
     document.getElementById("grid").style.display = "block";
     const grid=document.getElementById("grid");
-    
+
+    // 🚨 IMPORTANT: reset grid before injecting seed UI
+    grid.innerHTML = "";
     grid.innerHTML=`
     
     <div id="s1pBtn"
@@ -190,14 +192,17 @@ function buildSeedChooser(){
 // BUILD GRID UI
 // =============================
 function buildKCGrid() {
+    // 🚨 CLEAR OLD SEED UI COMPLETELY
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
     CURRENT_GROUP = null;
     CURRENT_PAGE = 0;
     CURRENT_VIEW = "grid";
     document.getElementById("colorControls").style.display = "block";
     document.getElementById("plotsTitle").style.display = "block";
-    document.getElementById("grid").style.display = "grid";
     document.getElementById("plots").style.display = "none";
-    const grid = document.getElementById("grid");
+    document.getElementById("grid").style.display = "grid";
+    document.getElementById("grid").innerHTML = "";
     const plots = document.getElementById("plots");
 
     plots.innerHTML = "";
