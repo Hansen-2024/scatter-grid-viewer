@@ -381,9 +381,11 @@ function buildKCGrid() {
 }
 function showGroup(groupName, page = 0, customFiles = null) {
     document.getElementById("colorControls").style.display = "block";
+    document.getElementById("plotsTitle").style.display = "block";
+
     document.getElementById("grid").style.display = "none";
     document.getElementById("plots").style.display = "block";
-    document.getElementById("colorControls").style.display = "none";
+
     CURRENT_GROUP = groupName;
     CURRENT_PAGE = page;
 
