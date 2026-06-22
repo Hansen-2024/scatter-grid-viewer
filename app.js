@@ -567,6 +567,19 @@ async function loadAndPlot(file, div) {
 // =============================
 // PLOT FUNCTION
 // =============================
+function cleanTitle(file) {
+
+    // remove duplicated T...N... patterns like T500N1000 repeated
+    let cleaned = file;
+
+    // collapse repeated segments like T500N1000_T500N1000
+    cleaned = cleaned.replace(/(T\d+N\d+)(_?\1)+/g, "$1");
+
+    // optional: also remove double underscores
+    cleaned = cleaned.replace(/_+/g, "_");
+
+    return cleaned;
+}
 function drawPlot(d, div, file) {
 
     const experimentTag = "LNm0.5s0.736L0.1H15.0";
@@ -585,7 +598,7 @@ function drawPlot(d, div, file) {
             }
         }], {
             title: {
-                text: file,
+                text: cleanTitle(file),
                 font: { size: 14 },
                 x: 0.5
             },
