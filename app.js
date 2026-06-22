@@ -8,9 +8,27 @@ let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
 const PLOTS_PER_PAGE = 8;
 init();
-window.onpopstate = function () {
+window.onpopstate = function(event){
 
-    CURRENT_VIEW = "home";
+    if(!event.state){
+
+        buildSeedChooser();
+        return;
+    }
+
+    if(event.state.view==="s1p"){
+
+        SEED_FILTER="s1p?";
+        buildKCGrid();
+        return;
+    }
+
+    if(event.state.view==="sp1"){
+
+        SEED_FILTER="s?p1";
+        buildKCGrid();
+        return;
+    }
 
     buildSeedChooser();
 
@@ -80,7 +98,7 @@ function buildFileMap(files) {
 }
 function buildSeedChooser(){
     clearUI();
-
+    document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
     document.getElementById("grid").style.display = "block";
     const grid=document.getElementById("grid");
@@ -157,7 +175,8 @@ function buildSeedChooser(){
 // BUILD GRID UI
 // =============================
 function buildKCGrid() {
-
+    document.getElementById("plotsTitle").style.display = "block";
+    document.getElementById("colorControls").style.display = "block";
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
@@ -312,7 +331,24 @@ function buildKCGrid() {
 
                 cell.innerHTML=`${filteredGroups[groupKey].length}<br>plots`;
 
-                cell.onclick=()=>showGroup(groupKey);
+                cell.onclick=()=>{
+                
+                    history.pushState(
+                        {
+                            view:"group",
+                            group:groupKey
+                        },
+                        "",
+                        "#group"
+                    );
+                
+                    showGroup(
+                        groupKey,
+                        0,
+                        filteredGroups[groupKey]
+                    );
+                
+                };
 
                 cell.onmouseenter=()=>{
                     cell.style.background="#f2f2f2";
@@ -339,7 +375,7 @@ function buildKCGrid() {
     });
 
 }
-function showGroup(groupName, page = 0) {
+function showGroup(groupName, page = 0, customFiles = null) {
     document.getElementById("colorControls").style.display = "block";
     document.getElementById("grid").style.display = "none";
     document.getElementById("plots").style.display = "block";
@@ -350,7 +386,9 @@ function showGroup(groupName, page = 0) {
     const plots = document.getElementById("plots");
     plots.innerHTML = "";
 
-    let files = [...GROUPS[groupName]];
+    let files = customFiles
+        ? [...customFiles]
+        : [...GROUPS[groupName]];
 
     files.sort((a, b) => {
 
