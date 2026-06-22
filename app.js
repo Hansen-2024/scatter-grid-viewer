@@ -192,17 +192,19 @@ function buildSeedChooser(){
 // BUILD GRID UI
 // =============================
 function buildKCGrid() {
-    // 🚨 CLEAR OLD SEED UI COMPLETELY
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
     CURRENT_GROUP = null;
     CURRENT_PAGE = 0;
     CURRENT_VIEW = "grid";
+    
+    //CLEAR OLD SEED UI COMPLETELY
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
     document.getElementById("colorControls").style.display = "block";
     document.getElementById("plotsTitle").style.display = "block";
     document.getElementById("plots").style.display = "none";
     document.getElementById("grid").style.display = "grid";
-    document.getElementById("grid").innerHTML = "";
+
     const plots = document.getElementById("plots");
 
     plots.innerHTML = "";
