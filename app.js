@@ -8,7 +8,15 @@ let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
 let SELECTED_CELL = null;
 const PLOTS_PER_PAGE = 8;
+function parseSeed(file) {
+    const m = file.match(/s(\d+)p(\d+)/);
+    if (!m) return null;
 
+    return {
+        s: Number(m[1]),
+        p: Number(m[2])
+    };
+}
 init();
 window.onpopstate = function(event){
 
@@ -222,20 +230,18 @@ function buildKCGrid() {
             if (!SEED_FILTER)
                 return true;
     
-            if (SEED_FILTER.includes("p?")) {
-    
-                let s = SEED_FILTER.match(/s(\d+)/)[1];
-    
-                return file.includes(`s${s}p`);
+            if (SEED_FILTER.startsWith("s?p")) {
+                const targetP = Number(SEED_FILTER.match(/p(\d+)/)[1]);
+            
+                const seed = parseSeed(file);
+                return seed && seed.p === targetP;
             }
-    
-            if (SEED_FILTER.includes("s?")) {
-    
-                let p = SEED_FILTER.match(/p(\d+)/)[1];
-    
-                return file.includes(`p${p}`);
+            if (SEED_FILTER.startsWith("s1p?")) {
+                const targetS = Number(SEED_FILTER.match(/s(\d+)/)[1]);
+            
+                const seed = parseSeed(file);
+                return seed && seed.s === targetS;
             }
-    
             return true;
         });
     
