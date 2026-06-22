@@ -362,11 +362,6 @@ function buildKCGrid() {
                     
                         cell.style.outline = "4px solid red";
                     
-                        showGroup(
-                            groupKey,
-                            0,
-                            filteredGroups[groupKey]
-                        );
                     history.pushState(
                         {
                             view:"group",
