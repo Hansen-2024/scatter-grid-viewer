@@ -162,6 +162,9 @@ function buildSeedChooser() {
 }
 // =============================
 function buildKCGrid() {
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = `repeat(${Kvals.length}, 120px)`;
+    grid.style.gap = "6px";
     console.log("GROUPS:", Object.keys(GROUPS).length);
     console.log("SEED_FILTER:", SEED_FILTER);
     console.log("buildKCGrid triggered");
@@ -176,45 +179,43 @@ function buildKCGrid() {
     document.getElementById("plots").style.display = "none";
 
     grid.innerHTML = "";
-    let filtered = {};
+    
+    // ensure we actually have data
+    if (Object.keys(filtered).length === 0) {
+        grid.innerHTML = "No data found for this filter";
+        return;
+    }
+    
+    Kvals.forEach(K => {
 
-    Object.keys(GROUPS).forEach(group => {
+    Cvals.forEach(C => {
 
-        let files = GROUPS[group].filter(file => {
+        const key = `K=${K}_C=${C}`;
 
-            if (!SEED_FILTER) return true;
+        let cell = document.createElement("div");
 
-            const seed = parseSeed(file);
-            if (!seed) return false;
+        cell.style.border = "1px solid black";
+        cell.style.height = "80px";
+        cell.style.display = "flex";
+        cell.style.alignItems = "center";
+        cell.style.justifyContent = "center";
 
-            if (SEED_FILTER.startsWith("s1p")) return seed.s === 1;
-            if (SEED_FILTER.startsWith("s?p1")) return seed.p === 1;
+        if (filtered[key]) {
+            cell.innerHTML = filtered[key].length + " plots";
+            cell.style.cursor = "pointer";
 
-            return true;
-        });
+            cell.onclick = () => {
+                showGroup(key, 0, filtered[key]);
+            };
 
-        if (files.length) filtered[group] = files;
+        } else {
+            cell.innerHTML = "";
+            cell.style.background = "#eee";
+        }
+
+        grid.appendChild(cell);
     });
-
-    let Kvals = new Set();
-    let Cvals = new Set();
-
-    Object.keys(filtered).forEach(k => {
-        let [K, C] = k.split("_");
-        Kvals.add(parseFloat(K.split("=")[1]));
-        Cvals.add(parseFloat(C.split("=")[1]));
-    });
-
-    Kvals = [...Kvals].sort((a,b)=>a-b);
-    Cvals = [...Cvals].sort((a,b)=>a-b);
-
-    grid.style.gridTemplateColumns =
-        `50px 60px repeat(${Kvals.length},120px)`;
-
-    // minimal safe grid (you can extend UI later safely)
-    grid.innerHTML = `<div>Grid loaded: ${Object.keys(filtered).length} groups</div>`;
-}
-
+});
 // =============================
 async function loadAndPlot(file, div) {
 
