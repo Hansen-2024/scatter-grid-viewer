@@ -2,17 +2,14 @@ let GROUPS = {};
 let DATA_CACHE = {};
 let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
-
 let COLOR_MODE = false;
+let SHOW_COLOR = false;
 let SEED_FILTER = null;
 let CURRENT_VIEW = "home";
 let SELECTED_CELL = null;
 
 const PLOTS_PER_PAGE = 8;
 
-// =============================
-// INIT
-// =============================
 init();
 
 window.onpopstate = function (event) {
@@ -35,215 +32,353 @@ window.onpopstate = function (event) {
 
     buildSeedChooser();
 };
-function setColorControls(show) {
-    document.getElementById("topBar").style.display = show ? "block" : "none";
-}
+
+// =============================
+// INIT
 // =============================
 async function init() {
-
     const manifest = await fetch("split_data/manifest.json")
         .then(r => r.json())
         .catch(err => {
-            console.error("❌ Missing split_data/manifest.json", err);
+            console.error("Missing split_data/manifest.json", err);
             return [];
         });
-
-    console.log("Loaded manifest:", manifest.length);
-
-    if (!manifest.length) {
-        alert("Dataset not loaded. Check split_data on GitHub.");
-    }
 
     buildFileMap(manifest);
     buildSeedChooser();
 
-    document.getElementById("normalBtn").onclick = () => {
+    document.getElementById("normalBtn").onclick = function () {
         COLOR_MODE = false;
-        if (CURRENT_GROUP) showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        if (document.getElementById("plots").style.display === "block" && CURRENT_GROUP) {
+            showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        }
     };
 
-    document.getElementById("colorBtn").onclick = () => {
+    document.getElementById("colorBtn").onclick = function () {
         COLOR_MODE = true;
-        if (CURRENT_GROUP) showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        if (document.getElementById("plots").style.display === "block" && CURRENT_GROUP) {
+            showGroup(CURRENT_GROUP, CURRENT_PAGE);
+        }
     };
 }
 
-// =============================
 function clearUI() {
     const grid = document.getElementById("grid");
     const plots = document.getElementById("plots");
 
-    if (window.Plotly && plots) Plotly.purge(plots);
+    Plotly.purge(plots);
 
     grid.innerHTML = "";
     plots.innerHTML = "";
 }
 
 // =============================
-function parseSeed(file) {
-    const m = file.match(/s(\d+)p(\d+)/);
-    if (!m) return null;
-
-    return { s: +m[1], p: +m[2] };
-}
-
+// BUILD GROUPS FROM FILES
 // =============================
 function buildFileMap(files) {
-
     GROUPS = {};
 
     files.forEach(file => {
-
         let kMatch = file.match(/K([0-9.]+)/);
         let cMatch = file.match(/C([0-9.]+)/);
 
-        if (!kMatch || !cMatch) return;
+        let K = kMatch ? Math.abs(parseFloat(kMatch[1])) : NaN;
+        let C = cMatch ? parseFloat(cMatch[1]) : NaN;
 
-        let K = parseFloat(kMatch[1]);
-        let C = parseFloat(cMatch[1]);
+        if (isNaN(K) || isNaN(C)) return;
 
-        let key = `K=${K}_C=${C}`;
+        let groupKey = `K=${K}_C=${C}`;
 
-        if (!GROUPS[key]) GROUPS[key] = [];
-        GROUPS[key].push(file);
+        if (!GROUPS[groupKey]) {
+            GROUPS[groupKey] = [];
+        }
+
+        GROUPS[groupKey].push(file);
     });
-
-    console.log("Groups:", Object.keys(GROUPS).length);
 }
-function showGroup(groupName, page = 0, customFiles = null) {
 
-    setColorControls(true);   // 🔥 show only in plot mode
-
-    CURRENT_GROUP = groupName;
-    CURRENT_PAGE = page;
-
-    document.getElementById("plots").style.display = "block";
-}
-// =============================
 function buildSeedChooser() {
-
     clearUI();
-    CURRENT_VIEW = "home";
 
-    setColorControls(false);   // 🔥 hide buttons on home
-
+    document.getElementById("colorControls").style.display = "none";
+    document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
-    document.getElementById("grid").style.display = "block";
 
     const grid = document.getElementById("grid");
+    grid.style.display = "block";
+    grid.innerHTML = "";
 
     grid.innerHTML = `
         <div id="s1pBtn"
-             style="width:200px;height:80px;border:1px solid black;
-             display:flex;align-items:center;justify-content:center;
-             cursor:pointer;margin:10px;">
+            style="width:250px;height:120px;border:2px solid black;
+            display:flex;align-items:center;justify-content:center;
+            font-size:28px;font-weight:bold;cursor:pointer;margin:20px auto;">
             s1p?
         </div>
 
         <div id="sp1Btn"
-             style="width:200px;height:80px;border:1px solid black;
-             display:flex;align-items:center;justify-content:center;
-             cursor:pointer;margin:10px;">
+            style="width:250px;height:120px;border:2px solid black;
+            display:flex;align-items:center;justify-content:center;
+            font-size:28px;font-weight:bold;cursor:pointer;margin:20px auto;">
             s?p1
         </div>
     `;
 
     document.getElementById("s1pBtn").onclick = () => {
         SEED_FILTER = "s1p?";
+        history.pushState({ view: "s1p" }, "", "#s1p");
         CURRENT_VIEW = "s1p";
         buildKCGrid();
     };
 
     document.getElementById("sp1Btn").onclick = () => {
         SEED_FILTER = "s?p1";
+        history.pushState({ view: "sp1" }, "", "#sp1");
         CURRENT_VIEW = "sp1";
         buildKCGrid();
     };
 }
+
+// =============================
+// BUILD GRID UI
 // =============================
 function buildKCGrid() {
-    grid.style.display = "grid";
-    grid.style.gridTemplateColumns = `repeat(${Kvals.length}, 120px)`;
-    grid.style.gap = "6px";
-    console.log("GROUPS:", Object.keys(GROUPS).length);
-    console.log("SEED_FILTER:", SEED_FILTER);
-    console.log("buildKCGrid triggered");
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
 
     CURRENT_GROUP = null;
     CURRENT_PAGE = 0;
     CURRENT_VIEW = "grid";
 
-    const grid = document.getElementById("grid");
-
-    document.getElementById("grid").style.display = "grid";
+    document.getElementById("colorControls").style.display = "block";
+    document.getElementById("plotsTitle").style.display = "block";
     document.getElementById("plots").style.display = "none";
 
-    grid.innerHTML = "";
-    
-    // ensure we actually have data
-    if (Object.keys(filtered).length === 0) {
-        grid.innerHTML = "No data found for this filter";
-        return;
-    }
-    
-    Kvals.forEach(K => {
+    let Kvalues = [];
+    let Cvalues = [];
+    let filteredGroups = {};
 
-    Cvals.forEach(C => {
+    Object.keys(GROUPS).forEach(group => {
+        let files = GROUPS[group].filter(file => {
+            if (!SEED_FILTER) return true;
 
-        const key = `K=${K}_C=${C}`;
+            if (SEED_FILTER.includes("p?")) {
+                let s = SEED_FILTER.match(/s(\d+)/)?.[1];
+                return s ? file.includes(`s${s}p`) : true;
+            }
 
-        let cell = document.createElement("div");
+            if (SEED_FILTER.includes("s?")) {
+                let p = SEED_FILTER.match(/p(\d+)/)?.[1];
+                return p ? file.includes(`p${p}`) : true;
+            }
 
-        cell.style.border = "1px solid black";
-        cell.style.height = "80px";
-        cell.style.display = "flex";
-        cell.style.alignItems = "center";
-        cell.style.justifyContent = "center";
+            return true;
+        });
 
-        if (filtered[key]) {
-            cell.innerHTML = filtered[key].length + " plots";
-            cell.style.cursor = "pointer";
-
-            cell.onclick = () => {
-                showGroup(key, 0, filtered[key]);
-            };
-
-        } else {
-            cell.innerHTML = "";
-            cell.style.background = "#eee";
-        }
-
-        grid.appendChild(cell);
+        if (files.length) filteredGroups[group] = files;
     });
-});
+
+    Object.keys(filteredGroups).forEach(group => {
+        let parts = group.split("_");
+        let K = parseFloat(parts[0].split("=")[1]);
+        let C = parseFloat(parts[1].split("=")[1]);
+
+        if (!Kvalues.includes(K)) Kvalues.push(K);
+        if (!Cvalues.includes(C)) Cvalues.push(C);
+    });
+
+    Kvalues.sort((a, b) => a - b);
+    Cvalues.sort((a, b) => a - b);
+
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = `50px 60px repeat(${Kvalues.length},120px)`;
+    grid.style.gap = "6px";
+    grid.style.alignItems = "center";
+
+    grid.appendChild(document.createElement("div"));
+    grid.appendChild(document.createElement("div"));
+
+    let kTitle = document.createElement("div");
+    kTitle.innerHTML = "<b>K/w₀</b>";
+    kTitle.style.gridColumn = `3 / span ${Kvalues.length}`;
+    kTitle.style.textAlign = "center";
+    kTitle.style.fontSize = "20px";
+    grid.appendChild(kTitle);
+
+    grid.appendChild(document.createElement("div"));
+    grid.appendChild(document.createElement("div"));
+
+    Kvalues.forEach(K => {
+        let h = document.createElement("div");
+        h.innerHTML = `<b>${Math.round(K / 8.0609)}</b>`;
+        h.style.textAlign = "center";
+        grid.appendChild(h);
+    });
+
+    let cLabel = document.createElement("div");
+    cLabel.innerHTML = "<b>C</b>";
+    cLabel.style.gridRow = `3 / span ${Cvalues.length}`;
+    cLabel.style.display = "flex";
+    cLabel.style.alignItems = "center";
+    cLabel.style.justifyContent = "center";
+    grid.appendChild(cLabel);
+
+    [...Cvalues].reverse().forEach(C => {
+        let rowLabel = document.createElement("div");
+        rowLabel.innerHTML = `<b>${C}</b>`;
+        grid.appendChild(rowLabel);
+
+        Kvalues.forEach(K => {
+            let groupKey = `K=${K}_C=${C}`;
+            let cell = document.createElement("div");
+
+            cell.style.height = "90px";
+            cell.style.border = "1px solid black";
+            cell.style.display = "flex";
+            cell.style.alignItems = "center";
+            cell.style.justifyContent = "center";
+
+            if (filteredGroups[groupKey]) {
+                cell.style.background = "white";
+                cell.style.cursor = "pointer";
+                cell.innerHTML = `${filteredGroups[groupKey].length}<br>plots`;
+
+                cell.onclick = () => {
+                    if (SELECTED_CELL) SELECTED_CELL.style.outline = "";
+                    SELECTED_CELL = cell;
+                    cell.style.outline = "4px solid red";
+
+                    history.pushState(
+                        { view: "group", group: groupKey },
+                        "",
+                        "#group"
+                    );
+
+                    showGroup(groupKey, 0, filteredGroups[groupKey]);
+                };
+            } else {
+                cell.style.background = "#ddd";
+                cell.innerHTML = "";
+            }
+
+            grid.appendChild(cell);
+        });
+    });
+}
+
+// =============================
+// SHOW GROUP
+// =============================
+function showGroup(groupName, page = 0, customFiles = null) {
+    CURRENT_GROUP = groupName;
+    CURRENT_PAGE = page;
+    CURRENT_VIEW = "plots";
+
+    const plots = document.getElementById("plots");
+    plots.innerHTML = "";
+
+    let files = customFiles ? [...customFiles] : [...GROUPS[groupName]];
+
+    const totalPages = Math.ceil(files.length / PLOTS_PER_PAGE);
+
+    let start = page * PLOTS_PER_PAGE;
+    let end = Math.min(start + PLOTS_PER_PAGE, files.length);
+
+    let container = document.createElement("div");
+    container.style.display = "grid";
+    container.style.gridTemplateColumns = "1fr 1fr";
+    container.style.gap = "5px";
+    plots.appendChild(container);
+
+    (async function render() {
+        for (let i = start; i < end; i++) {
+            let div = document.createElement("div");
+            div.style.height = "350px";
+            container.appendChild(div);
+
+            loadAndPlot(files[i], div);
+
+            await new Promise(r => setTimeout(r, 50));
+        }
+    })();
+
+    let nav = document.createElement("div");
+    nav.style.textAlign = "center";
+    nav.innerHTML = `
+        <button id="prevBtn">Previous</button>
+        Page ${page + 1} / ${totalPages}
+        <button id="nextBtn">Next</button>
+    `;
+
+    plots.appendChild(nav);
+
+    document.getElementById("prevBtn").onclick = () => {
+        if (CURRENT_PAGE > 0) showGroup(CURRENT_GROUP, CURRENT_PAGE - 1);
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        if (CURRENT_PAGE < totalPages - 1) showGroup(CURRENT_GROUP, CURRENT_PAGE + 1);
+    };
+}
+
+// =============================
+// LOAD + CACHE
 // =============================
 async function loadAndPlot(file, div) {
-
     if (DATA_CACHE[file]) {
-        drawPlot(DATA_CACHE[file], div);
+        drawPlot(DATA_CACHE[file], div, file);
         return;
     }
 
     try {
         const d = await fetch(`split_data/${file}`).then(r => r.json());
         DATA_CACHE[file] = d;
-        drawPlot(d, div);
-    }
-    catch (e) {
-        console.error("Load failed:", file, e);
+        drawPlot(d, div, file);
+    } catch (err) {
+        console.error("Failed loading file:", file, err);
     }
 }
 
 // =============================
-function drawPlot(d, div) {
+// PLOT
+// =============================
+function drawPlot(d, div, file) {
+    if (!COLOR_MODE || !d.color) {
+        Plotly.newPlot(div, [{
+            x: d.x,
+            y: d.y,
+            mode: "markers",
+            type: "scattergl",
+            marker: { size: 2, color: "#0000dd" }
+        }], {
+            title: { text: file, x: 0.5 },
+            margin: { t: 30, l: 40, r: 10, b: 40 }
+        });
 
-    Plotly.newPlot(div, [{
-        x: d.x,
-        y: d.y,
+        return;
+    }
+
+    const groups = {};
+
+    for (let i = 0; i < d.x.length; i++) {
+        const c = d.color[i] || "#bbb";
+        if (!groups[c]) groups[c] = { x: [], y: [] };
+        groups[c].x.push(d.x[i]);
+        groups[c].y.push(d.y[i]);
+    }
+
+    const traces = Object.keys(groups).map(c => ({
+        x: groups[c].x,
+        y: groups[c].y,
         mode: "markers",
         type: "scattergl",
-        marker: { size: 2, color: "#0000dd" }
-    }], {
-        margin: { t: 20, l: 30, r: 10, b: 30 }
+        name: c,
+        marker: { size: 2, color: c }
+    }));
+
+    Plotly.newPlot(div, traces, {
+        showlegend: true,
+        title: { text: file, x: 0.5 },
+        margin: { t: 30, l: 40, r: 10, b: 40 }
     });
 }
