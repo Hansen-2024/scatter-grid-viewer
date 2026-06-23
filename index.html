@@ -88,7 +88,7 @@
         /* right side panel */
         
         #infoPanel {
-            width: 320px;
+            width: 250px;
             border: 1px solid #ccc;
             padding: 10px;
             background: white;
@@ -96,10 +96,8 @@
         
         #distributionImg {
             width: 100%;
-            display: block;
-            margin-bottom: 10px;
         }
-        
+                
         #distributionText {
             font-size: 16px;
             line-height: 1.4;
@@ -110,26 +108,7 @@
 <body>
 
 <h2>Parameter Grid</h2>
-
-<div id="gridArea">
-
-    <div id="grid"></div>
-
-    <div id="infoPanel">
-
-        <img
-            src="distribution.png"
-            id="distributionImg"
-        >
-
-        <div id="distributionText">
-            Lognormal Peak Omega: 8.0609 rad/s<br>
-            Amount: 111 out of 1000
-        </div>
-
-    </div>
-
-</div>
+<div id="grid"></div>
 
 <div id="colorControls" style="display:none;">
     <button id="normalBtn">Normal</button>
