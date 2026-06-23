@@ -1,7 +1,14 @@
 import os
 import json
 import numpy as np
+import re
 
+def clean_name(s):
+    # replace tuples like (0,200,None)
+    s = re.sub(r"\(|\)|,", "-", s)
+    s = s.replace("None", "N")
+    s = s.replace("--", "-")
+    return s
 # ==============================
 # BASE FOLDER
 # ==============================
@@ -12,7 +19,12 @@ base_dir = "/home/willow/Desktop/kimia/sample0/LNm0.5s0.736L0.1H15.0"
 # ==============================
 output_dir = os.path.join(base_dir, "split_data")
 os.makedirs(output_dir, exist_ok=True)
+import shutil
 
+if os.path.exists(output_dir):
+    shutil.rmtree(output_dir)
+
+os.makedirs(output_dir, exist_ok=True)
 # ==============================
 # SCAN ALL .DAT FILES AND SPLIT
 # ==============================
@@ -39,8 +51,12 @@ for root, dirs, files in os.walk(base_dir):
                 )
 
                 filename = os.path.basename(file_path)
+                file_stem = os.path.splitext(filename)[0]
+                seed_folder_clean = clean_name(seed_folder)
+                file_clean = os.path.splitext(filename)[0]
 
-                safe_key = f"{seed_folder}_{filename}"
+                safe_key = f"{seed_folder_clean}_{file_stem}"
+                out_path = os.path.join(output_dir, f"data_{safe_key}.json")
 
                 out_path = os.path.join(output_dir, f"data_{safe_key}.json")
 
@@ -84,10 +100,14 @@ print("Files written:", count)
 # ==============================
 # ✅ ADD MANIFEST (IMPORTANT)
 # ==============================
+import glob
+import os
+import json
 
 manifest = [
-    f for f in os.listdir(output_dir)
-    if f.endswith(".json")
+    os.path.relpath(f, output_dir)
+    for f in glob.glob(output_dir + "/**/*.json", recursive=True)
+    if os.path.basename(f) != "manifest.json"
 ]
 
 manifest_path = os.path.join(output_dir, "manifest.json")
@@ -97,15 +117,23 @@ with open(manifest_path, "w") as f:
 
 print("manifest.json created")
 print("Total files in manifest:", len(manifest))
+import glob
 
+all_json = glob.glob(output_dir + "/**/*.json", recursive=True)
+
+print("TOTAL JSON RECURSIVE:", len(all_json))
 '''Then commit the changes:
 go to the right directory first:
-
+#============================================
 cd ~/Desktop/kimia/sample0/LNm0.5s0.736L0.1H15.0
-
+git fetch origin
+git pull --rebase origin main
+git push origin main
+#============================================
+#if run conflicts:
 git status
 git add .
-git commit -m "update dataset + plots"
+git rebase --continue
 git push origin main
 
 IF Git says “fetch first” (VERY COMMON)
