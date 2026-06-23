@@ -68,31 +68,9 @@ async function init() {
 function clearUI() {
     const grid = document.getElementById("grid");
     const plots = document.getElementById("plots");
-
     Plotly.purge(plots);
-
     grid.innerHTML = "";
     plots.innerHTML = "";
-    let oldPanel = document.getElementById("infoPanel");
-    if (oldPanel) oldPanel.remove();
-    
-    grid.parentNode.style.display = "flex";
-    grid.parentNode.style.alignItems = "flex-start";
-    grid.parentNode.style.gap = "20px";
-    
-    const panel = document.createElement("div");
-    panel.id = "infoPanel";
-    
-    panel.innerHTML = `
-        <img src="distribution.png" id="distributionImg">
-    
-        <div id="distributionText">
-            Lognormal Peak Omega: 8.0609 rad/s<br>
-            Amount: 111 out of 1000
-        </div>
-    `;
-    
-    grid.parentNode.appendChild(panel);
 }
 
 // =============================
@@ -131,6 +109,8 @@ function buildFileMap(files) {
 function buildSeedChooser() {
     CURRENT_VIEW = "home";
     clearUI();
+    const container = document.getElementById("gridContainer");
+    container.style.display = "block";
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
     
@@ -186,6 +166,8 @@ function buildSeedChooser() {
     };
 }
 function buildSeedTypeChooser() {
+    const container = document.getElementById("gridContainer");
+    container.style.display = "block";
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
     
@@ -250,6 +232,27 @@ function buildKCGrid() {
     
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
+    const container = document.getElementById("gridContainer");
+    
+    container.style.display = "flex";
+    container.style.alignItems = "flex-start";
+    container.style.gap = "20px";
+    
+    let oldPanel = document.getElementById("infoPanel");
+    if (oldPanel) oldPanel.remove();
+    
+    const panel = document.createElement("div");
+    panel.id = "infoPanel";
+    
+    panel.innerHTML = `
+    <img src="distribution.png" id="distributionImg">
+    <div id="distributionText">
+    Lognormal Peak Omega: 8.0609 rad/s<br>
+    Amount: 111 out of 1000
+    </div>
+    `;
+    
+    container.appendChild(panel);
     if (SELECTED_CELL) {
         SELECTED_CELL.style.outline = "";
         SELECTED_CELL = null;
