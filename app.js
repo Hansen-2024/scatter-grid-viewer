@@ -279,6 +279,7 @@ function showGroup(groupName, page = 0, customFiles = null) {
     CURRENT_VIEW = "plots";
 
     const plots = document.getElementById("plots");
+    plots.style.display = "block";   // ADD THIS
     plots.innerHTML = "";
 
     let files = customFiles ? [...customFiles] : [...GROUPS[groupName]];
@@ -329,6 +330,7 @@ function showGroup(groupName, page = 0, customFiles = null) {
 // LOAD + CACHE
 // =============================
 async function loadAndPlot(file, div) {
+    console.log("Loading:", file);
     if (DATA_CACHE[file]) {
         drawPlot(DATA_CACHE[file], div, file);
         return;
