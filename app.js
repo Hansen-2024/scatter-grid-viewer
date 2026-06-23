@@ -300,7 +300,7 @@ function buildKCGrid() {
     Cvalues.sort((a, b) => a - b);
 
     grid.style.display = "grid";
-    grid.style.gridTemplateColumns = `50px 60px repeat(${Kvalues.length},120px)`;
+    grid.style.gridTemplateColumns = `50px 60px repeat(${Kvalues.length},100px)`;
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
 
