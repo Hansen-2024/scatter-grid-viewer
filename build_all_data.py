@@ -32,8 +32,15 @@ for root, dirs, files in os.walk(base_dir):
                 x = data[:, 0].tolist()
                 y = data[:, 1].tolist()
 
-                rel_path = os.path.relpath(file_path, base_dir)
-                safe_key = rel_path.replace("/", "_").replace("\\", "_")
+                seed_folder = os.path.basename(
+                    os.path.dirname(
+                        os.path.dirname(file_path)
+                    )
+                )
+
+                filename = os.path.basename(file_path)
+
+                safe_key = f"{seed_folder}_{filename}"
 
                 out_path = os.path.join(output_dir, f"data_{safe_key}.json")
 
