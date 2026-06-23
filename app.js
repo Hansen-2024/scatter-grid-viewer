@@ -98,8 +98,9 @@ function buildFileMap(files) {
 }
 
 function buildSeedChooser() {
+    CURRENT_VIEW = "home";
     clearUI();
-
+    
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
@@ -143,13 +144,16 @@ function buildSeedChooser() {
 // BUILD GRID UI
 // =============================
 function buildKCGrid() {
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-
     CURRENT_GROUP = null;
     CURRENT_PAGE = 0;
     CURRENT_VIEW = "grid";
-
+    
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    if (SELECTED_CELL) {
+        SELECTED_CELL.style.outline = "";
+        SELECTED_CELL = null;
+    }
     document.getElementById("colorControls").style.display = "block";
     document.getElementById("plotsTitle").style.display = "block";
     document.getElementById("plots").style.display = "none";
