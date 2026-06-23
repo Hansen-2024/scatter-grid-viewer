@@ -1,5 +1,8 @@
-let GROUPS = {};
+let REGULAR_GROUPS = {};
+let FAST_GROUPS = {};
 let DATA_CACHE = {};
+
+let DATASET_MODE = "regular";
 let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
 let COLOR_MODE = false;
@@ -76,9 +79,12 @@ function clearUI() {
 // BUILD GROUPS FROM FILES
 // =============================
 function buildFileMap(files) {
-    GROUPS = {};
+
+    REGULAR_GROUPS = {};
+    FAST_GROUPS = {};
 
     files.forEach(file => {
+
         let kMatch = file.match(/K([0-9.]+)/);
         let cMatch = file.match(/C([0-9.]+)/);
 
@@ -89,11 +95,16 @@ function buildFileMap(files) {
 
         let groupKey = `K=${K}_C=${C}`;
 
-        if (!GROUPS[groupKey]) {
-            GROUPS[groupKey] = [];
+        const target =
+            file.includes("_FT(")
+                ? FAST_GROUPS
+                : REGULAR_GROUPS;
+
+        if (!target[groupKey]) {
+            target[groupKey] = [];
         }
 
-        GROUPS[groupKey].push(file);
+        target[groupKey].push(file);
     });
 }
 
@@ -110,21 +121,46 @@ function buildSeedChooser() {
     grid.innerHTML = "";
 
     grid.innerHTML = `
-        <div id="s1pBtn"
-            style="width:250px;height:120px;border:2px solid black;
-            display:flex;align-items:center;justify-content:center;
-            font-size:28px;font-weight:bold;cursor:pointer;margin:20px auto;">
-            s1p?
-        </div>
-
-        <div id="sp1Btn"
-            style="width:250px;height:120px;border:2px solid black;
-            display:flex;align-items:center;justify-content:center;
-            font-size:28px;font-weight:bold;cursor:pointer;margin:20px auto;">
-            s?p1
-        </div>
+    
+    <div id="regularBtn"
+    style="
+    width:300px;
+    height:100px;
+    border:2px solid black;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:20px auto;">
+    Regular
+    </div>
+    
+    <div id="fastBtn"
+    style="
+    width:300px;
+    height:100px;
+    border:2px solid black;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:20px auto;">
+    Fast Individuals
+    </div>
     `;
-
+    document.getElementById("regularBtn").onclick = () => {
+        DATASET_MODE = "regular";
+        buildSeedTypeChooser();
+    };
+    
+    document.getElementById("fastBtn").onclick = () => {
+        DATASET_MODE = "fast";
+        buildSeedTypeChooser();
+    };
     document.getElementById("s1pBtn").onclick = () => {
         SEED_FILTER = "s1p?";
         history.pushState({ view: "s1p" }, "", "#s1p");
@@ -139,7 +175,58 @@ function buildSeedChooser() {
         buildKCGrid();
     };
 }
+function buildSeedTypeChooser() {
 
+    const grid = document.getElementById("grid");
+
+    grid.innerHTML = `
+
+    <div id="s1pBtn"
+    style="
+    width:250px;
+    height:120px;
+    border:2px solid black;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:20px auto;">
+    s1p?
+    </div>
+
+    <div id="sp1Btn"
+    style="
+    width:250px;
+    height:120px;
+    border:2px solid black;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:20px auto;">
+    s?p1
+    </div>
+    `;
+
+    document.getElementById("s1pBtn").onclick = () => {
+        SEED_FILTER = "s1p?";
+        buildKCGrid();
+    };
+
+    document.getElementById("sp1Btn").onclick = () => {
+        SEED_FILTER = "s?p1";
+        buildKCGrid();
+    };
+}
+function getActiveGroups() {
+    return DATASET_MODE === "fast"
+        ? FAST_GROUPS
+        : REGULAR_GROUPS;
+}
 // =============================
 // BUILD GRID UI
 // =============================
@@ -162,6 +249,8 @@ function buildKCGrid() {
     let Cvalues = [];
     let filteredGroups = {};
 
+    const GROUPS = getActiveGroups();
+    
     Object.keys(GROUPS).forEach(group => {
         let files = GROUPS[group].filter(file => {
             if (!SEED_FILTER) return true;
@@ -281,14 +370,34 @@ function showGroup(groupName, page = 0, customFiles = null) {
     const plots = document.getElementById("plots");
     plots.style.display = "block";   // ADD THIS
     plots.innerHTML = "";
-
+    
+    const GROUPS = getActiveGroups();
     let files = customFiles ? [...customFiles] : [...GROUPS[groupName]];
     files.sort((a, b) => {
-        const sa = parseInt(a.match(/s\d+p(\d+)/)?.[1] || 0);
-        const sb = parseInt(b.match(/s\d+p(\d+)/)?.[1] || 0);
+    
+        const sa = parseInt(
+            a.match(/s(\d+)p(\d+)/)?.[1] || 0
+        );
+    
+        const pa = parseInt(
+            a.match(/s(\d+)p(\d+)/)?.[2] || 0
+        );
+    
+        const sb = parseInt(
+            b.match(/s(\d+)p(\d+)/)?.[1] || 0
+        );
+    
+        const pb = parseInt(
+            b.match(/s(\d+)p(\d+)/)?.[2] || 0
+        );
+    
+        if (SEED_FILTER === "s1p?") {
+            return pa - pb;
+        }
     
         return sa - sb;
     });
+
     const totalPages = Math.ceil(files.length / PLOTS_PER_PAGE);
 
     let start = page * PLOTS_PER_PAGE;
