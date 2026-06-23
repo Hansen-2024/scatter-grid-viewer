@@ -1,7 +1,7 @@
 let REGULAR_GROUPS = {};
 let FAST_GROUPS = {};
 let DATA_CACHE = {};
-
+let CURRENT_FILES = null;
 let DATASET_MODE = "regular";
 let CURRENT_GROUP = null;
 let CURRENT_PAGE = 0;
@@ -372,7 +372,16 @@ function showGroup(groupName, page = 0, customFiles = null) {
     plots.innerHTML = "";
     
     const GROUPS = getActiveGroups();
-    let files = customFiles ? [...customFiles] : [...GROUPS[groupName]];
+    let files;
+    
+    if (customFiles) {
+        files = [...customFiles];
+        CURRENT_FILES = [...customFiles];
+    } else if (CURRENT_FILES) {
+        files = [...CURRENT_FILES];
+    } else {
+        files = [...GROUPS[groupName]];
+    }
     files.sort((a, b) => {
     
         const sa = parseInt(
@@ -463,6 +472,10 @@ async function loadAndPlot(file, div) {
 // PLOT
 // =============================
 function drawPlot(d, div, file) {
+    let title = file
+        .replace("data_", "")            //delete this line if build all data py changed. 
+        .replace("T500N1000_", "")
+        .replace("_raster.json", "");
     if (!COLOR_MODE || !d.color) {
         Plotly.newPlot(div, [{
             x: d.x,
@@ -471,7 +484,7 @@ function drawPlot(d, div, file) {
             type: "scattergl",
             marker: { size: 2, color: "#0000dd" }
         }], {
-            title: { text: file, x: 0.5 },
+            title: { text: title, x: 0.5 },
             margin: { t: 30, l: 40, r: 10, b: 40 }
         });
 
@@ -498,7 +511,7 @@ function drawPlot(d, div, file) {
 
     Plotly.newPlot(div, traces, {
         showlegend: true,
-        title: { text: file, x: 0.5 },
+        title: { text: title, x: 0.5 },
         margin: { t: 30, l: 40, r: 10, b: 40 }
     });
 }
