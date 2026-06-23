@@ -1,49 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Scatter Grid Viewer</title>
+    <title>Scatter Grid Viewer</title>
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<style>
-body {
-    font-family: sans-serif;
-    margin: 0;
-}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
 
-#topBar {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
+        h2 {
+            margin-top: 20px;
+        }
 
-#grid {
-    display: grid;
-    padding: 10px;
-}
+        /* =========================
+           GRID CONTAINER
+           ========================= */
+        #grid {
+            display: grid;
+            gap: 6px;
+            align-items: center;
+            margin-top: 10px;
+        }
 
-#plots {
-    padding: 10px;
-}
+        #grid div {
+            text-align: center;
+            font-family: Arial;
+        }
 
-button {
-    margin-right: 10px;
-    padding: 6px 12px;
-}
-</style>
+        /* =========================
+           CELL STYLE (USED BY JS)
+           ========================= */
+        .cell {
+            padding: 10px;
+            border: 1px solid black;
+            cursor: pointer;
+            text-align: center;
+            background: white;
+            transition: 0.2s;
+            min-height: 60px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cell:hover {
+            background: #f2f2f2;
+        }
+
+        /* =========================
+           PLOTS AREA
+           ========================= */
+        #plots {
+            display: none; /* JS toggles this */
+            margin-top: 20px;
+        }
+
+        /* Plot containers inside grid */
+        #plots > div {
+            width: 100%;
+        }
+
+        /* =========================
+           CONTROL BUTTONS (if you have them)
+           ========================= */
+        button {
+            padding: 6px 12px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f0f0f0;
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="topBar">
-    <button id="normalBtn">Normal</button>
-    <button id="colorBtn">Color</button>
-</div>
+    <h2>Parameter Grid</h2>
+    <div id="grid"></div>
 
-<div id="grid"></div>
-<div id="plots"></div>
+    <h2>Plots</h2>
+    <div id="plots"></div>
 
-<script src="app.js"></script>
+    <!-- your JS -->
+    <script src="app.js?v=2"></script>
 
 </body>
 </html>
