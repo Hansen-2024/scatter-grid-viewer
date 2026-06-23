@@ -283,7 +283,12 @@ function showGroup(groupName, page = 0, customFiles = null) {
     plots.innerHTML = "";
 
     let files = customFiles ? [...customFiles] : [...GROUPS[groupName]];
-
+    files.sort((a, b) => {
+        const sa = parseInt(a.match(/s\d+p(\d+)/)?.[1] || 0);
+        const sb = parseInt(b.match(/s\d+p(\d+)/)?.[1] || 0);
+    
+        return sa - sb;
+    });
     const totalPages = Math.ceil(files.length / PLOTS_PER_PAGE);
 
     let start = page * PLOTS_PER_PAGE;
