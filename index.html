@@ -86,14 +86,6 @@
         }
         
         /* right side panel */
-        
-        #infoPanel {
-            width: 250px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background: white;
-        }
-        
         #distributionImg {
             width: 100%;
         }
@@ -101,14 +93,27 @@
         #distributionText {
             font-size: 16px;
             line-height: 1.4;
+            margin-top:10px;
         }
+        #gridContainer{
+            display:block;
+        }
+        #infoPanel{
+            width:220px;
+            border:1px solid #ccc;
+            padding:10px;
+            background:white;
+        } 
     </style>
 </head>
 
 <body>
 
 <h2>Parameter Grid</h2>
-<div id="grid"></div>
+    
+<div id="gridContainer">
+    <div id="grid"></div>
+</div>
 
 <div id="colorControls" style="display:none;">
     <button id="normalBtn">Normal</button>
