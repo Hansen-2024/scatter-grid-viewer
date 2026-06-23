@@ -161,19 +161,6 @@ function buildSeedChooser() {
         DATASET_MODE = "fast";
         buildSeedTypeChooser();
     };
-    document.getElementById("s1pBtn").onclick = () => {
-        SEED_FILTER = "s1p?";
-        history.pushState({ view: "s1p" }, "", "#s1p");
-        CURRENT_VIEW = "s1p";
-        buildKCGrid();
-    };
-
-    document.getElementById("sp1Btn").onclick = () => {
-        SEED_FILTER = "s?p1";
-        history.pushState({ view: "sp1" }, "", "#sp1");
-        CURRENT_VIEW = "sp1";
-        buildKCGrid();
-    };
 }
 function buildSeedTypeChooser() {
 
