@@ -35,7 +35,9 @@ window.onpopstate = function (event) {
 
     buildSeedChooser();
 };
-
+function setColorControls(show) {
+    document.getElementById("topBar").style.display = show ? "block" : "none";
+}
 // =============================
 async function init() {
 
@@ -108,12 +110,22 @@ function buildFileMap(files) {
 
     console.log("Groups:", Object.keys(GROUPS).length);
 }
+function showGroup(groupName, page = 0, customFiles = null) {
 
+    setColorControls(true);   // 🔥 show only in plot mode
+
+    CURRENT_GROUP = groupName;
+    CURRENT_PAGE = page;
+
+    document.getElementById("plots").style.display = "block";
+}
 // =============================
 function buildSeedChooser() {
 
     clearUI();
     CURRENT_VIEW = "home";
+
+    setColorControls(false);   // 🔥 hide buttons on home
 
     document.getElementById("plots").style.display = "none";
     document.getElementById("grid").style.display = "block";
@@ -121,11 +133,17 @@ function buildSeedChooser() {
     const grid = document.getElementById("grid");
 
     grid.innerHTML = `
-        <div id="s1pBtn" style="width:200px;height:80px;border:1px solid black;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:10px;">
+        <div id="s1pBtn"
+             style="width:200px;height:80px;border:1px solid black;
+             display:flex;align-items:center;justify-content:center;
+             cursor:pointer;margin:10px;">
             s1p?
         </div>
 
-        <div id="sp1Btn" style="width:200px;height:80px;border:1px solid black;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:10px;">
+        <div id="sp1Btn"
+             style="width:200px;height:80px;border:1px solid black;
+             display:flex;align-items:center;justify-content:center;
+             cursor:pointer;margin:10px;">
             s?p1
         </div>
     `;
@@ -142,20 +160,22 @@ function buildSeedChooser() {
         buildKCGrid();
     };
 }
-
 // =============================
 function buildKCGrid() {
+    console.log("GROUPS:", Object.keys(GROUPS).length);
+    console.log("SEED_FILTER:", SEED_FILTER);
+    console.log("buildKCGrid triggered");
 
     CURRENT_GROUP = null;
     CURRENT_PAGE = 0;
     CURRENT_VIEW = "grid";
 
     const grid = document.getElementById("grid");
-    grid.innerHTML = "";
 
-    document.getElementById("plots").style.display = "none";
     document.getElementById("grid").style.display = "grid";
+    document.getElementById("plots").style.display = "none";
 
+    grid.innerHTML = "";
     let filtered = {};
 
     Object.keys(GROUPS).forEach(group => {
