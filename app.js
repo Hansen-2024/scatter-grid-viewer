@@ -73,6 +73,26 @@ function clearUI() {
 
     grid.innerHTML = "";
     plots.innerHTML = "";
+    let oldPanel = document.getElementById("infoPanel");
+    if (oldPanel) oldPanel.remove();
+    
+    grid.parentNode.style.display = "flex";
+    grid.parentNode.style.alignItems = "flex-start";
+    grid.parentNode.style.gap = "20px";
+    
+    const panel = document.createElement("div");
+    panel.id = "infoPanel";
+    
+    panel.innerHTML = `
+        <img src="distribution.png" id="distributionImg">
+    
+        <div id="distributionText">
+            Lognormal Peak Omega: 8.0609 rad/s<br>
+            Amount: 111 out of 1000
+        </div>
+    `;
+    
+    grid.parentNode.appendChild(panel);
 }
 
 // =============================
@@ -111,7 +131,10 @@ function buildFileMap(files) {
 function buildSeedChooser() {
     CURRENT_VIEW = "home";
     clearUI();
+    let oldPanel = document.getElementById("infoPanel");
+    if (oldPanel) oldPanel.remove();
     
+    document.getElementById("grid").parentNode.style.display = "block";
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
@@ -163,7 +186,10 @@ function buildSeedChooser() {
     };
 }
 function buildSeedTypeChooser() {
-
+    let oldPanel = document.getElementById("infoPanel");
+    if (oldPanel) oldPanel.remove();
+    
+    document.getElementById("grid").parentNode.style.display = "block";
     const grid = document.getElementById("grid");
 
     grid.innerHTML = `
