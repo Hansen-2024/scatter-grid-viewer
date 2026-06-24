@@ -273,12 +273,16 @@ function buildKCGrid() {
 
             if (SEED_FILTER.includes("p?")) {
                 let s = SEED_FILTER.match(/s(\d+)/)?.[1];
-                return s ? file.includes(`s${s}p`) : true;
+            
+                if (!s) return true;
+            
+                return new RegExp(`s${s}p\\d+(?!\\d)`).test(file);
             }
 
             if (SEED_FILTER.includes("s?")) {
                 let p = SEED_FILTER.match(/p(\d+)/)?.[1];
-                return p ? file.includes(`p${p}`) : true;
+            
+                return file.match(new RegExp(`s\\d+p${p}(?!\\d)`));
             }
 
             return true;
