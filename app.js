@@ -229,6 +229,7 @@ function buildKCGrid() {
     CURRENT_GROUP = null;
     CURRENT_PAGE = 0;
     CURRENT_VIEW = "grid";
+    updateBreadcrumb();
     
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
@@ -386,7 +387,7 @@ function showGroup(groupName, page = 0, customFiles = null) {
     CURRENT_GROUP = groupName;
     CURRENT_PAGE = page;
     CURRENT_VIEW = "plots";
-
+    updateBreadcrumb();
     const plots = document.getElementById("plots");
     plots.style.display = "block";   // ADD THIS
     plots.innerHTML = "";
