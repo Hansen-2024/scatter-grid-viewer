@@ -227,14 +227,23 @@ function buildSeedTypeChooser() {
     CURRENT_VIEW = "seed";
     SEED_FILTER = null;
     updateBreadcrumb();
+    // Reset everything from grid page
+    clearUI();
+    
+    document.getElementById("colorControls").style.display = "none";
+    document.getElementById("plotsTitle").style.display = "none";
+    document.getElementById("plots").style.display = "none";
+    
     const container = document.getElementById("gridContainer");
     container.style.display = "block";
+    container.style.alignItems = "";
+    container.style.gap = "";
+    
+    // Remove the right-side info panel
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
     
-    document.getElementById("grid").parentNode.style.display = "block";
     const grid = document.getElementById("grid");
-
     grid.innerHTML = `
 
     <div id="s1pBtn"
