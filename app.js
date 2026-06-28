@@ -72,6 +72,35 @@ function clearUI() {
     grid.innerHTML = "";
     plots.innerHTML = "";
 }
+function resetToMenuLayout() {
+
+    clearUI();
+
+    // Hide plot-related UI
+    document.getElementById("colorControls").style.display = "none";
+    document.getElementById("plotsTitle").style.display = "none";
+    document.getElementById("plots").style.display = "none";
+
+    // Restore grid container
+    const container = document.getElementById("gridContainer");
+    container.style.display = "block";
+    container.style.alignItems = "";
+    container.style.gap = "";
+
+    // Remove info panel if it exists
+    const panel = document.getElementById("infoPanel");
+    if (panel) panel.remove();
+
+    // Reset selected grid cell
+    if (SELECTED_CELL) {
+        SELECTED_CELL.style.outline = "";
+        SELECTED_CELL = null;
+    }
+
+    CURRENT_GROUP = null;
+    CURRENT_PAGE = 0;
+    CURRENT_FILES = null;
+}
 function updateBreadcrumb() {
 
     const box = document.getElementById("breadcrumb");
@@ -166,7 +195,7 @@ function buildSeedChooser() {
     CURRENT_GROUP = null;
     CURRENT_FILES = null;
     updateBreadcrumb();
-    clearUI();
+    resetToMenuLayout();
     const container = document.getElementById("gridContainer");
     container.style.display = "block";
     let oldPanel = document.getElementById("infoPanel");
@@ -227,8 +256,7 @@ function buildSeedTypeChooser() {
     CURRENT_VIEW = "seed";
     SEED_FILTER = null;
     updateBreadcrumb();
-    // Reset everything from grid page
-    clearUI();
+    resetToMenuLayout();
     
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
