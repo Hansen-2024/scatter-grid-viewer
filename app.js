@@ -76,35 +76,56 @@ function updateBreadcrumb() {
 
     const box = document.getElementById("breadcrumb");
 
-    let html = "<div><b>Home</b></div>";
+    let html = `
+    <span class="crumb" onclick="buildSeedChooser()">Home</span>
+    `;
 
+    // Home page
     if (CURRENT_VIEW === "home") {
         box.innerHTML = html;
         return;
     }
 
-    html += "<div>&nbsp;&nbsp;└── ";
+    // Seed-selection page
+    if (CURRENT_VIEW === "seed") {
 
-    html += DATASET_MODE === "regular"
-        ? "Regular"
-        : "Fast Individuals";
+        html += `
+        &nbsp;>&nbsp;
+        <span class="crumb"
+              onclick="buildSeedTypeChooser()">
+            ${DATASET_MODE === "regular"
+                ? "Regular"
+                : "Fast Individuals"}
+        </span>
+        `;
 
-    html += "</div>";
-
-    if (CURRENT_VIEW === "seed" ||
-        CURRENT_VIEW === "grid" ||
-        CURRENT_VIEW === "plots") {
-
-        html += "<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── ";
-
-        html += SEED_FILTER === "s1p?"
-            ? "s1p?"
-            : "s?p1";
-
-        html += "</div>";
+        box.innerHTML = html;
+        return;
     }
 
-    box.innerHTML = html;
+    // Grid or plot page
+    if (CURRENT_VIEW === "grid" ||
+        CURRENT_VIEW === "plots") {
+
+        html += `
+        &nbsp;>&nbsp;
+        <span class="crumb"
+              onclick="buildSeedTypeChooser()">
+            ${DATASET_MODE === "regular"
+                ? "Regular"
+                : "Fast Individuals"}
+        </span>
+
+        &nbsp;>&nbsp;
+
+        <span class="crumb"
+              onclick="buildKCGrid()">
+            ${SEED_FILTER}
+        </span>
+        `;
+
+        box.innerHTML = html;
+    }
 }
 // =============================
 // BUILD GROUPS FROM FILES
