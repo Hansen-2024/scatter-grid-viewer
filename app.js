@@ -72,7 +72,40 @@ function clearUI() {
     grid.innerHTML = "";
     plots.innerHTML = "";
 }
+function updateBreadcrumb() {
 
+    const box = document.getElementById("breadcrumb");
+
+    let html = "<div><b>Home</b></div>";
+
+    if (CURRENT_VIEW === "home") {
+        box.innerHTML = html;
+        return;
+    }
+
+    html += "<div>&nbsp;&nbsp;└── ";
+
+    html += DATASET_MODE === "regular"
+        ? "Regular"
+        : "Fast Individuals";
+
+    html += "</div>";
+
+    if (CURRENT_VIEW === "seed" ||
+        CURRENT_VIEW === "grid" ||
+        CURRENT_VIEW === "plots") {
+
+        html += "<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── ";
+
+        html += SEED_FILTER === "s1p?"
+            ? "s1p?"
+            : "s?p1";
+
+        html += "</div>";
+    }
+
+    box.innerHTML = html;
+}
 // =============================
 // BUILD GROUPS FROM FILES
 // =============================
@@ -108,6 +141,7 @@ function buildFileMap(files) {
 
 function buildSeedChooser() {
     CURRENT_VIEW = "home";
+    updateBreadcrumb();
     clearUI();
     const container = document.getElementById("gridContainer");
     container.style.display = "block";
@@ -166,6 +200,8 @@ function buildSeedChooser() {
     };
 }
 function buildSeedTypeChooser() {
+    CURRENT_VIEW = "seed";
+    updateBreadcrumb();
     const container = document.getElementById("gridContainer");
     container.style.display = "block";
     let oldPanel = document.getElementById("infoPanel");
