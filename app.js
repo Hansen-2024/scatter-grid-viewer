@@ -75,7 +75,15 @@ function clearUI() {
 function resetToMenuLayout() {
 
     clearUI();
-
+    const grid = document.getElementById("grid");
+    
+    grid.style.display = "block";
+    grid.style.gridTemplateColumns = "";
+    grid.style.gridTemplateRows = "";
+    grid.style.gridAutoFlow = "";
+    grid.style.gap = "";
+    grid.style.alignItems = "";
+    grid.style.justifyItems = "";
     // Hide plot-related UI
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
@@ -272,6 +280,13 @@ function buildSeedTypeChooser() {
     if (oldPanel) oldPanel.remove();
     
     const grid = document.getElementById("grid");
+    grid.style.display = "block";
+    grid.style.gridTemplateColumns = "";
+    grid.style.gridTemplateRows = "";
+    grid.style.gridAutoFlow = "";
+    grid.style.gap = "";
+    grid.style.alignItems = "";
+    grid.style.justifyItems = "";
     grid.innerHTML = `
 
     <div id="s1pBtn"
