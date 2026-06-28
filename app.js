@@ -213,11 +213,18 @@ function buildSeedChooser() {
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
-
+    
     const grid = document.getElementById("grid");
-    grid.style.display = "block";
-    grid.innerHTML = "";
-
+    
+    // Completely reset any inline styles left from buildKCGrid()
+    grid.removeAttribute("style");
+    
+    // Restore the default style from CSS
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = "1fr";
+    grid.style.gap = "20px";
+    grid.style.justifyItems = "center";
+    
     grid.innerHTML = `
     
     <div id="regularBtn"
@@ -280,13 +287,16 @@ function buildSeedTypeChooser() {
     if (oldPanel) oldPanel.remove();
     
     const grid = document.getElementById("grid");
-    grid.style.display = "block";
-    grid.style.gridTemplateColumns = "";
-    grid.style.gridTemplateRows = "";
-    grid.style.gridAutoFlow = "";
-    grid.style.gap = "";
-    grid.style.alignItems = "";
-    grid.style.justifyItems = "";
+    
+    // Completely reset any inline styles left from buildKCGrid()
+    grid.removeAttribute("style");
+    
+    // Restore the default style from CSS
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = "1fr";
+    grid.style.gap = "20px";
+    grid.style.justifyItems = "center";
+    
     grid.innerHTML = `
 
     <div id="s1pBtn"
