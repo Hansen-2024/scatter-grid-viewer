@@ -428,6 +428,9 @@ function buildKCGrid() {
     Cvalues.sort((a, b) => a - b);
 
     grid.style.display = "grid";
+    //grid.style.width = "fit-content";
+    //grid.style.minWidth = "900px";   // adjust if needed
+    grid.style.width = "100%";
     grid.style.gridTemplateColumns = `50px 60px repeat(${Kvalues.length},100px)`;
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
