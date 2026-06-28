@@ -222,6 +222,7 @@ function buildSeedChooser() {
 }
 function buildSeedTypeChooser() {
     CURRENT_VIEW = "seed";
+    SEED_FILTER = null;
     updateBreadcrumb();
     const container = document.getElementById("gridContainer");
     container.style.display = "block";
