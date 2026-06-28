@@ -162,6 +162,9 @@ function buildFileMap(files) {
 
 function buildSeedChooser() {
     CURRENT_VIEW = "home";
+    SEED_FILTER = null;
+    CURRENT_GROUP = null;
+    CURRENT_FILES = null;
     updateBreadcrumb();
     clearUI();
     const container = document.getElementById("gridContainer");
