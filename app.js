@@ -358,7 +358,7 @@ function buildKCGrid() {
     grid.innerHTML = "";
     const container = document.getElementById("gridContainer");
     container.style.width = "100%";
-    container.style.overflowX = "auto";
+    //container.style.overflowX = "auto";
     container.style.display = "block";
     
     let oldPanel = document.getElementById("infoPanel");
