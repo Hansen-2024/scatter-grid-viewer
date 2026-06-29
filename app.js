@@ -68,6 +68,8 @@ async function init() {
 function clearUI() {
     const grid = document.getElementById("grid");
     const plots = document.getElementById("plots");
+    const panel = document.getElementById("infoPanel");
+    if (panel) panel.remove();
     Plotly.purge(plots);
     grid.innerHTML = "";
     plots.innerHTML = "";
@@ -201,7 +203,7 @@ function buildSeedChooser() {
     updateBreadcrumb();
     resetToMenuLayout();
     const container = document.getElementById("gridContainer");
-
+    const grid = document.getElementById("grid");
     grid.className = "gridMenu";
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
@@ -211,7 +213,7 @@ function buildSeedChooser() {
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
     
-    const grid = document.getElementById("grid");
+    
     
     // Restore the default style from CSS
     grid.style.display = "grid";
