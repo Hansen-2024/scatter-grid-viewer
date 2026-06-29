@@ -438,6 +438,7 @@ function buildKCGrid() {
     //grid.style.margin = "0 auto";
     grid.style.display = "grid";
     grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 180px)`;
+    console.log(getComputedStyle(grid).gridTemplateColumns);
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
 
