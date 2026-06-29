@@ -205,7 +205,9 @@ function buildSeedChooser() {
     updateBreadcrumb();
     resetToMenuLayout();
     const container = document.getElementById("gridContainer");
-    container.style.display = "block";
+    //container.style.display = "block";
+    container.style.display = "flex";
+    container.style.justifyContent = "center";
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
     
@@ -278,7 +280,9 @@ function buildSeedTypeChooser() {
     document.getElementById("plots").style.display = "none";
     
     const container = document.getElementById("gridContainer");
-    container.style.display = "block";
+    //container.style.display = "block";
+    container.style.display = "flex";
+    container.style.justifyContent = "center";
     container.style.alignItems = "";
     container.style.gap = "";
     
@@ -357,8 +361,9 @@ function buildKCGrid() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
     const container = document.getElementById("gridContainer");
-    container.style.width = "100%";
-    //container.style.overflowX = "auto";
+    //container.style.width = "100%";
+    //container.style.display = "block";
+    container.style.width = "auto";
     container.style.display = "block";
     
     let oldPanel = document.getElementById("infoPanel");
