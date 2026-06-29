@@ -427,7 +427,7 @@ function buildKCGrid() {
     Cvalues.sort((a, b) => a - b);
 
 
-    grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 100px)`;
+    grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 70px)`;
     console.log(getComputedStyle(grid).gridTemplateColumns);
 
 
@@ -469,12 +469,7 @@ function buildKCGrid() {
             let groupKey = `K=${K}_C=${C}`;
             let cell = document.createElement("div");
             cell.className = "gridCell";
-            //cell.style.height = "90px";
-            cell.style.border = "1px solid black";
-            cell.style.display = "flex";
-            cell.style.alignItems = "center";
-            cell.style.justifyContent = "center";
-            cell.style.minWidth = "0";        //Without it: grid items ignore your column width and force expansion behavior
+
             if (filteredGroups[groupKey]) {
                 cell.style.background = "white";
                 cell.style.cursor = "pointer";
