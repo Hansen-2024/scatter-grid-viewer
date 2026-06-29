@@ -428,6 +428,7 @@ function buildKCGrid() {
 
 
     grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 70px)`;
+    cell.className = "gridCell";
     console.log(getComputedStyle(grid).gridTemplateColumns);
 
 
@@ -468,7 +469,7 @@ function buildKCGrid() {
         Kvalues.forEach(K => {
             let groupKey = `K=${K}_C=${C}`;
             let cell = document.createElement("div");
-            cell.className = "gridCell";
+            
 
             if (filteredGroups[groupKey]) {
                 cell.style.background = "white";
