@@ -430,7 +430,7 @@ function buildKCGrid() {
     grid.style.display = "grid";
     grid.style.width = "100%";
     grid.style.minWidth = "unset";
-    grid.style.gridTemplateColumns = `60px 70px repeat(${Kvalues.length}, minmax(140px, 1fr))`;
+    grid.style.gridTemplateColumns = `60px 70px repeat(${Kvalues.length},140px)`;
 
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
