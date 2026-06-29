@@ -484,7 +484,7 @@ function buildKCGrid() {
             cell.style.display = "flex";
             cell.style.alignItems = "center";
             cell.style.justifyContent = "center";
-
+            cell.style.minWidth = "0";        //Without it: grid items ignore your column width and force expansion behavior
             if (filteredGroups[groupKey]) {
                 cell.style.background = "white";
                 cell.style.cursor = "pointer";
