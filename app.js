@@ -468,8 +468,8 @@ function buildKCGrid() {
         Kvalues.forEach(K => {
             let groupKey = `K=${K}_C=${C}`;
             let cell = document.createElement("div");
-
-            cell.style.height = "90px";
+            cell.className = "gridCell";
+            //cell.style.height = "90px";
             cell.style.border = "1px solid black";
             cell.style.display = "flex";
             cell.style.alignItems = "center";
