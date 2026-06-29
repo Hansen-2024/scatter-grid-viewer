@@ -429,7 +429,7 @@ function buildKCGrid() {
     grid.style.width = "100%";
     //grid.style.minWidth = "unset";
     //grid.style.minWidth = "1200px";
-    grid.style.maxWidth = "600px";
+    grid.style.maxWidth = "300px";
     grid.style.margin = "0 auto";
     grid.style.gridTemplateColumns = `80px 80px repeat(${Kvalues.length}, 180px)`;
     grid.style.justifyContent = "start";
