@@ -429,6 +429,7 @@ function buildKCGrid() {
 
     grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 70px)`;
     cell.className = "gridCell";
+    
     console.log(getComputedStyle(grid).gridTemplateColumns);
 
 
