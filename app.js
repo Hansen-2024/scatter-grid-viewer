@@ -437,7 +437,7 @@ function buildKCGrid() {
     //grid.style.maxWidth = "300px";
     //grid.style.margin = "0 auto";
     grid.style.display = "grid";
-    grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 180px))`;
+    grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 180px)`;
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
 
