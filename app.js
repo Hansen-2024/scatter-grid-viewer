@@ -373,12 +373,11 @@ function buildKCGrid() {
     Amount: 111 out of 1000
     </div>
     `;
-    panel.style.width = "320px";
+
     panel.style.flexShrink = "0";
-    panel.style.border = "1px solid #ccc";
-    panel.style.padding = "10px";
-    panel.style.background = "white";
     panel.style.height = "fit-content";
+    const img = document.getElementById("distributionImg");
+
     document.getElementById("gridArea").appendChild(panel);
     if (SELECTED_CELL) {
         SELECTED_CELL.style.outline = "";
