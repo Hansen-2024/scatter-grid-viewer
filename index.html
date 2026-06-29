@@ -14,10 +14,21 @@
         h2 {
             margin-top: 20px;
         }
-
-        /* =========================
-           GRID CONTAINER
-           ========================= */
+        .gridMenu {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            justify-items: center;
+        }
+        
+        .gridKC {
+            display: grid;
+            gap: 6px;
+            align-items: center;
+            justify-items: center;
+            width: fit-content;
+            margin: 10px auto 0 auto;
+        }
         #grid{
             display:grid;
             gap:6px;
@@ -32,9 +43,6 @@
             font-family: Arial;
         }
 
-        /* =========================
-           CELL STYLE (USED BY JS)
-           ========================= */
         .cell {
             padding: 10px;
             font-size: 18px;
@@ -54,9 +62,7 @@
             background: #f2f2f2;
         }
 
-        /* =========================
-           PLOTS AREA
-           ========================= */
+        
         #plots {
             display: none; /* JS toggles this */
             margin-top: 20px;
