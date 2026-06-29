@@ -360,7 +360,7 @@ function buildKCGrid() {
     
     container.style.display = "flex";
     container.style.alignItems = "flex-start";
-    container.style.gap = "20px";
+    container.style.gap = "8px";
     
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
