@@ -441,9 +441,6 @@ function buildKCGrid() {
     console.log(getComputedStyle(grid).gridTemplateColumns);
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
-
-    grid.style.width = "max-content";
-    grid.style.minWidth = "max-content";
     grid.style.justifyContent = "start";
 
 
