@@ -76,8 +76,7 @@ function resetToMenuLayout() {
 
     clearUI();
     const grid = document.getElementById("grid");
-    
-    grid.style.display = "block";
+
     grid.style.gridTemplateColumns = "";
     grid.style.gridTemplateRows = "";
     grid.style.gridAutoFlow = "";
@@ -202,8 +201,8 @@ function buildSeedChooser() {
     updateBreadcrumb();
     resetToMenuLayout();
     const container = document.getElementById("gridContainer");
-    //container.style.display = "block";
 
+    grid.className = "gridMenu";
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
     
@@ -213,9 +212,6 @@ function buildSeedChooser() {
     document.getElementById("plots").style.display = "none";
     
     const grid = document.getElementById("grid");
-    
-    // Completely reset any inline styles left from buildKCGrid()
-    grid.removeAttribute("style");
     
     // Restore the default style from CSS
     grid.style.display = "grid";
@@ -270,7 +266,7 @@ function buildSeedTypeChooser() {
     SEED_FILTER = null;
     updateBreadcrumb();
     resetToMenuLayout();
-    
+    grid.className = "gridMenu";
     document.getElementById("colorControls").style.display = "none";
     document.getElementById("plotsTitle").style.display = "none";
     document.getElementById("plots").style.display = "none";
@@ -283,9 +279,6 @@ function buildSeedTypeChooser() {
     if (oldPanel) oldPanel.remove();
     
     const grid = document.getElementById("grid");
-    
-    // Completely reset any inline styles left from buildKCGrid()
-    grid.removeAttribute("style");
     
     // Restore the default style from CSS
     grid.style.display = "grid";
@@ -426,7 +419,7 @@ function buildKCGrid() {
     Kvalues.sort((a, b) => a - b);
     Cvalues.sort((a, b) => a - b);
 
-
+    grid.className = "gridKC";
     grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 70px)`;
     cell.className = "gridCell";
     
