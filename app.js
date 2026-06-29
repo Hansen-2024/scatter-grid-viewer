@@ -374,7 +374,7 @@ function buildKCGrid() {
     </div>
     `;
     
-    container.appendChild(panel);
+    document.getElementById("gridArea").appendChild(panel);
     if (SELECTED_CELL) {
         SELECTED_CELL.style.outline = "";
         SELECTED_CELL = null;
