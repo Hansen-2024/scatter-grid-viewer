@@ -357,7 +357,8 @@ function buildKCGrid() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
     const container = document.getElementById("gridContainer");
-    
+    container.style.width = "100%";
+    container.style.overflowX = "auto";
     container.style.display = "block";
     
     let oldPanel = document.getElementById("infoPanel");
@@ -439,8 +440,11 @@ function buildKCGrid() {
     grid.style.gridTemplateColumns =`50px 60px repeat(${Kvalues.length}, 180px))`;
     grid.style.gap = "6px";
     grid.style.alignItems = "center";
+
     grid.style.width = "max-content";
+    grid.style.minWidth = "max-content";
     grid.style.justifyContent = "start";
+
 
     grid.appendChild(document.createElement("div"));
     grid.appendChild(document.createElement("div"));
