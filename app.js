@@ -78,7 +78,7 @@ function resetToMenuLayout() {
 
     clearUI();
     const grid = document.getElementById("grid");
-
+    grid.style.display = "grid";
     grid.style.gridTemplateColumns = "";
     grid.style.gridTemplateRows = "";
     grid.style.gridAutoFlow = "";
@@ -196,6 +196,7 @@ function buildFileMap(files) {
 }
 
 function buildSeedChooser() {
+    const grid = document.getElementById("grid");
     CURRENT_VIEW = "home";
     SEED_FILTER = null;
     CURRENT_GROUP = null;
@@ -203,7 +204,7 @@ function buildSeedChooser() {
     updateBreadcrumb();
     resetToMenuLayout();
     const container = document.getElementById("gridContainer");
-    const grid = document.getElementById("grid");
+    
     grid.className = "gridMenu";
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
@@ -264,6 +265,7 @@ function buildSeedChooser() {
     };
 }
 function buildSeedTypeChooser() {
+    const grid = document.getElementById("grid");
     CURRENT_VIEW = "seed";
     SEED_FILTER = null;
     updateBreadcrumb();
