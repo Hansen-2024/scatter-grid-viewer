@@ -428,9 +428,10 @@ function buildKCGrid() {
     grid.style.display = "grid";
     grid.style.width = "100%";
     //grid.style.minWidth = "unset";
-    grid.style.minWidth = "1200px";
-    grid.style.gridTemplateColumns =
-    `80px 80px repeat(${Kvalues.length}, minmax(160px, 1fr))`;
+    //grid.style.minWidth = "1200px";
+    grid.style.gridTemplateColumns = `80px 80px repeat(${Kvalues.length}, 180px)`;
+    grid.style.justifyContent = "start";
+    grid.style.alignContent = "start";
     grid.style.gap = "2px";
     grid.style.alignItems = "center";
 
