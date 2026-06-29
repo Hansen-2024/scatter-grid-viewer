@@ -358,9 +358,7 @@ function buildKCGrid() {
     grid.innerHTML = "";
     const container = document.getElementById("gridContainer");
     
-    container.style.display = "flex";
-    container.style.alignItems = "flex-start";
-    container.style.gap = "8px";
+    container.style.display = "block";
     
     let oldPanel = document.getElementById("infoPanel");
     if (oldPanel) oldPanel.remove();
