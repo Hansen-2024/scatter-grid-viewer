@@ -426,17 +426,14 @@ function buildKCGrid() {
     Cvalues.sort((a, b) => a - b);
 
     grid.style.display = "grid";
-    grid.style.width = "100%";
+    grid.style.width = "50%";
     //grid.style.minWidth = "unset";
     //grid.style.minWidth = "1200px";
-    grid.style.maxWidth = "300px";
+    //grid.style.maxWidth = "300px";
     grid.style.margin = "0 auto";
-    grid.style.gridTemplateColumns = `80px 80px repeat(${Kvalues.length}, 180px)`;
-    grid.style.justifyContent = "start";
-    grid.style.alignContent = "start";
+    //grid.style.gridTemplateColumns = `80px 80px repeat(${Kvalues.length}, 180px)`;
     grid.style.gap = "3px 3px";        // row gap + column gap
     grid.style.alignItems = "center";
-
 
     grid.appendChild(document.createElement("div"));
     grid.appendChild(document.createElement("div"));
