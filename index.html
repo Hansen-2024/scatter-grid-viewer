@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Scatter Grid Viewer</title>
+<<<<<<< HEAD
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
@@ -46,22 +47,58 @@
         .cell {
             padding: 10px;
             font-size: 18px;
+=======
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        /* MAIN 2x2 GRID */
+        #grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-width: 600px;
+        }
+        #grid div{
+            text-align:center;
+            font-family:Arial;
+        }
+        
+        #grid div:hover{
+            transition:0.2s;
+        }
+        
+        .cell:hover{
+            background:#f2f2f2;
+        }
+
+        /* EACH CELL */
+        .cell {
+            padding: 20px;
+>>>>>>> Update dataset
             border: 1px solid black;
             cursor: pointer;
             text-align: center;
             background: white;
             transition: 0.2s;
+<<<<<<< HEAD
             min-height: 60px;
 
             display: flex;
             align-items: center;
             justify-content: center;
+=======
+>>>>>>> Update dataset
         }
 
         .cell:hover {
             background: #f2f2f2;
         }
 
+<<<<<<< HEAD
         
         #plots {
             display: none; /* JS toggles this */
@@ -145,12 +182,20 @@
         }
 
 
+=======
+        /* PLOTS AREA */
+        #plots {
+            display: block;
+            margin-top: 20px;
+        }
+>>>>>>> Update dataset
     </style>
 </head>
 
 <body>
 
 <h2>Parameter Grid</h2>
+<<<<<<< HEAD
 <div id="breadcrumb"></div>
 <div id="gridArea">
     <div id="gridContainer">
@@ -169,6 +214,20 @@
 <div id="plots"></div>
 
 <script src="app.js?v=3"></script>
+=======
+<div id="grid"></div>
+
+<h2 id="plotsTitle">Plots</h2>
+
+<div id="colorControls">
+    <button id="normalBtn">Show Normal</button>
+    <button id="colorBtn">Show Colored</button>
+</div>
+
+<div id="plots"></div>
+
+<script src="app.js?v=2"></script>
+>>>>>>> Update dataset
 
 </body>
 </html>
