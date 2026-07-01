@@ -1,12 +1,6 @@
-# ======================
-# GENERATED DATA (IGNORE)
-# ======================
-split_data/
+# GENERATED DATA (IGNORE EVERYTHING EXCEPT split_data)
 
 *.json
-*.png
 *.dat
-
-# optional noise files
 __pycache__/
 *.pyc
