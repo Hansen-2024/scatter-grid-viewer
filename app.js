@@ -373,9 +373,10 @@ function buildKCGrid(updateHistory = true) {
     panel.innerHTML = `
         <img src="distribution.png" id="distributionImg" alt="Distribution">
         <div id="distributionText">
-            Lognormal Peak Omega: 8.0609 rad/s        
+            Lognormal Peak Omega: 8.0609 rad/s <span style="margin-left: 30px;">        
             Amount: 111 out of 1000<br>
-            High K: reduce background noise & straighten the sync line    High C: reduce # cuts & straighen the sync line
+            High K: reduce background noise & straighten the sync line<br>
+            High C: reduce # cuts & straighen the sync line
         </div>
     `;
     panel.style.flexShrink = "0";
