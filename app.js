@@ -326,8 +326,19 @@ function buildSeedTypeChooser(updateHistory = true) {
     grid.style.gap = "20px";
     grid.style.justifyItems = "center";
 
-    const s1pButton = createMenuButton("s1pBtn", "s1p?", "250px", "120px");
-    const sp1Button = createMenuButton("sp1Btn", "s?p1", "250px", "120px");
+    const s1pButton = createMenuButton(
+        "s1pBtn",
+        "Spawn Location Seed 1 &&& Initial Phase Seed ?",
+        "500px",
+        "120px"
+    );
+    
+    const sp1Button = createMenuButton(
+        "sp1Btn",
+        "Spawn Location Seed ? &&& Initial Phase Seed 1",
+        "500px",
+        "120px"
+    );
 
     s1pButton.addEventListener("click", () => {
         STATE.seedFilter = "s1p?";
