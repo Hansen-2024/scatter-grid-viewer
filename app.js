@@ -14,6 +14,7 @@ const STATE = {
     colorMode: false
 };
 
+
 init();
 
 window.addEventListener("popstate", handlePopState);
