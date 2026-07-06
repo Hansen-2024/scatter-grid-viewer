@@ -2,6 +2,7 @@ let REGULAR_GROUPS = {};
 let FAST_GROUPS = {};
 const DATA_CACHE = {};
 const BASE_URL = "https://pub-ab5fc928dbec49ecacb38862ccb8c335.r2.dev/split_data";
+
 const PLOTS_PER_PAGE = 8;
 const STATE = {
     datasetMode: "regular",
