@@ -1,7 +1,7 @@
 let REGULAR_GROUPS = {};
 let FAST_GROUPS = {};
 const DATA_CACHE = {};
-
+const BASE_URL = "https://pub-ab5fc928dbec49ecacb38862ccb8c335.r2.dev/split_data";
 const PLOTS_PER_PAGE = 8;
 const STATE = {
     datasetMode: "regular",
@@ -20,7 +20,7 @@ init();
 window.addEventListener("popstate", handlePopState);
 
 async function init() {
-    const manifest = await fetch("split_data/manifest.json")
+    const manifest = await fetch(`${BASE_URL}/manifest.json`)    //fetch("split_data/manifest.json")
         .then(response => response.json())
         .catch(error => {
             console.error("Missing split_data/manifest.json", error);
@@ -581,7 +581,7 @@ async function loadAndPlot(file, div) {
     }
 
     try {
-        const data = await fetch(`split_data/${file}`).then(response => response.json());
+        const data = await fetch(`${BASE_URL}/${file}`).then(response => response.json());    //fetch(`split_data/${file}`)
         DATA_CACHE[file] = data;
         drawPlot(data, div, file);
     } catch (error) {
