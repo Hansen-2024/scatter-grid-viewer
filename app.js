@@ -255,7 +255,6 @@ function sortFilesForDisplay(files) {
         return leftSeed - rightSeed || leftP - rightP;
     });
 }
-
 function createMenuButton(id, text, width, height) {
     const button = document.createElement("button");
     button.type = "button";
