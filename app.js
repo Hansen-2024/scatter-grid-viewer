@@ -16,7 +16,7 @@ const STATE = {
     currentFiles: [],
     currentView: "home",
     selectedCell: null,
-    colorMode: false
+    colorMode: false,
     orderMode:false,
 };
 
@@ -40,19 +40,24 @@ async function init() {
 }
 
 function wireControls() {
+
     document.getElementById("normalBtn").addEventListener("click", () => {
         STATE.colorMode = false;
+        STATE.orderMode = false;
         refreshPlots();
     });
 
     document.getElementById("colorBtn").addEventListener("click", () => {
         STATE.colorMode = true;
+        STATE.orderMode = false;
         refreshPlots();
     });
+
     document.getElementById("orderBtn").addEventListener("click", () => {
         STATE.orderMode = true;
         refreshPlots();
     });
+
 }
 
 function handlePopState(event) {
