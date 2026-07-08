@@ -1,7 +1,11 @@
 let REGULAR_GROUPS = {};
 let FAST_GROUPS = {};
 const DATA_CACHE = {};
-const BASE_URL = "https://pub-ab5fc928dbec49ecacb38862ccb8c335.r2.dev/split_data";
+const SPLIT_BASE_URL =
+    "https://pub-ab5fc928dbec49ecacb38862ccb8c335.r2.dev/split_data";
+
+const ORDER_BASE_URL =
+    "https://pub-ab5fc928dbec49ecacb38862ccb8c335.r2.dev/order_parameter";
 
 const PLOTS_PER_PAGE = 8;
 const STATE = {
@@ -13,6 +17,7 @@ const STATE = {
     currentView: "home",
     selectedCell: null,
     colorMode: false
+    orderMode:false,
 };
 
 
@@ -21,7 +26,7 @@ init();
 window.addEventListener("popstate", handlePopState);
 
 async function init() {
-    const manifest = await fetch(`${BASE_URL}/manifest.json`)    //fetch("split_data/manifest.json")
+    const manifest = await fetch(`${SPLIT_BASE_URL}/manifest.json`)    //const manifest = await fetch(`${BASE_URL}/manifest.json`)    //fetch("split_data/manifest.json")
         .then(response => response.json())
         .catch(error => {
             console.error("Missing split_data/manifest.json", error);
@@ -42,6 +47,10 @@ function wireControls() {
 
     document.getElementById("colorBtn").addEventListener("click", () => {
         STATE.colorMode = true;
+        refreshPlots();
+    });
+    document.getElementById("orderBtn").addEventListener("click", () => {
+        STATE.orderMode = true;
         refreshPlots();
     });
 }
@@ -526,7 +535,12 @@ function showGroup(groupName, page = 0, customFiles = null, updateHistory = true
                 const plotContainer = document.createElement("div");
                 plotContainer.style.height = "350px";
                 container.appendChild(plotContainer);
-                await loadAndPlot(files[index], plotContainer);
+                if (STATE.orderMode) {
+                    await loadOrderParameter(files[index], plotContainer);
+                }
+                else {
+                    await loadAndPlot(files[index], plotContainer);
+                }
                 await new Promise(resolve => setTimeout(resolve, 50));
             }
         })();
@@ -581,14 +595,14 @@ async function loadAndPlot(file, div) {
     }
 
     try {
-        const data = await fetch(`${BASE_URL}/${file}`).then(response => response.json());    //fetch(`split_data/${file}`)
+        const data = await fetch(`${SPLIT_BASE_URL}/${file}`).then(response => response.json());    //fetch(`split_data/${file}`)
         DATA_CACHE[file] = data;
         drawPlot(data, div, file);
     } catch (error) {
         console.error("Failed loading file:", file, error);
     }
 }
-
+async function loadOrderParameter(file, div)
 function drawPlot(data, div, file) {
     const title = file
         .replace("data_", "")
