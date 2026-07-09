@@ -1,5 +1,6 @@
 let REGULAR_GROUPS = {};
 let FAST_GROUPS = {};
+let ORDER_GROUPS = {};
 const DATA_CACHE = {};
 const SPLIT_BASE_URL =
     "https://pub-ab5fc928dbec49ecacb38862ccb8c335.r2.dev/split_data";
@@ -26,14 +27,17 @@ init();
 window.addEventListener("popstate", handlePopState);
 
 async function init() {
-    const manifest = await fetch(`${SPLIT_BASE_URL}/manifest.json`)    //const manifest = await fetch(`${BASE_URL}/manifest.json`)    //fetch("split_data/manifest.json")
-        .then(response => response.json())
-        .catch(error => {
-            console.error("Missing split_data/manifest.json", error);
-            return [];
-        });
-
-    buildFileMap(manifest);
+    const splitManifest = await fetch(`${SPLIT_BASE_URL}/manifest.json`)
+        .then(r => r.json())
+        .catch(() => []);
+    
+    const orderManifest = await fetch(`${ORDER_BASE_URL}/manifest.json`)
+        .then(r => r.json())
+        .catch(() => []);
+    
+    buildFileMap(splitManifest);
+    buildOrderFileMap(orderManifest);
+    
     wireControls();
     history.replaceState(createHistoryState("home"), "", "#home");
     buildSeedChooser(false);
@@ -227,11 +231,38 @@ function buildFileMap(files) {
         target[groupKey].push(file);
     });
 }
+function buildOrderFileMap(files) {
 
-function getActiveGroups() {
-    return STATE.datasetMode === "fast" ? FAST_GROUPS : REGULAR_GROUPS;
+    ORDER_GROUPS = {};
+
+    files.forEach(file => {
+
+        const kMatch = file.match(/K(-?[0-9.]+)/);
+        const cMatch = file.match(/C(-?[0-9.]+)/);
+
+        if (!kMatch || !cMatch) return;
+
+        const groupKey =
+            `K=${parseFloat(kMatch[1])}_C=${parseFloat(cMatch[1])}`;
+
+        if (!ORDER_GROUPS[groupKey]) {
+            ORDER_GROUPS[groupKey] = [];
+        }
+
+        ORDER_GROUPS[groupKey].push(file);
+    });
+
 }
+function getActiveGroups() {
 
+    if (STATE.orderMode) {
+        return ORDER_GROUPS;
+    }
+
+    return STATE.datasetMode === "fast"
+        ? FAST_GROUPS
+        : REGULAR_GROUPS;
+}
 function filterFilesBySeed(files) {
     if (!STATE.seedFilter) {
         return [...files];
@@ -607,7 +638,32 @@ async function loadAndPlot(file, div) {
         console.error("Failed loading file:", file, error);
     }
 }
-async function loadOrderParameter(file, div)
+async function loadOrderParameter(file, div) {
+
+    if (DATA_CACHE[file]) {
+        drawOrderParameter(DATA_CACHE[file], div, file);
+        return;
+    }
+
+    try {
+
+        const data =
+            await fetch(`${ORDER_BASE_URL}/${file}`)
+            .then(r => r.json());
+
+        DATA_CACHE[file] = data;
+
+        drawOrderParameter(data, div, file);
+
+    }
+    catch (err) {
+
+        div.innerHTML =
+            "<div style='display:flex;justify-content:center;align-items:center;height:350px;font-size:22px;'>None</div>";
+
+    }
+
+}
 function drawPlot(data, div, file) {
     const title = file
         .replace("data_", "")
@@ -653,4 +709,44 @@ function drawPlot(data, div, file) {
         title: { text: title, x: 0.5 },
         margin: { t: 30, l: 40, r: 10, b: 40 }
     });
+}
+function drawOrderParameter(data, div, file) {
+
+    const title = file
+        .replace("z_", "")
+        .replace(".json", "");
+
+    const dt = 0.01;
+
+    const time =
+        Array.from(
+            { length: data.y.length },
+            (_, i) => i * dt
+        );
+
+    Plotly.newPlot(div, [{
+
+        x: time,
+        y: data.y,
+
+        mode: "lines",
+        type: "scatter"
+
+    }], {
+
+        title: {
+            text: title,
+            x: 0.5
+        },
+
+        xaxis: {
+            title: "Time"
+        },
+
+        yaxis: {
+            title: "Order Parameter"
+        }
+
+    });
+
 }
